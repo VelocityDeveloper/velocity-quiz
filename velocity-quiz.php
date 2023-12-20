@@ -14,7 +14,7 @@
  * @wordpress-plugin
  * Plugin Name:       Velocity Quiz
  * Plugin URI:        https://velocitydeveloper.com
- * Description:       Quiz plugin for Velocitydeveloper Client
+ * Description:       Quiz plugin by Velocity Developer
  * Version:           1.0.0.0
  * Author:            Velocity
  * Author URI:        https://velocitydeveloper.com
