@@ -36,16 +36,41 @@ if (!defined('WPINC')) {
  */
 define('VELOCITY_QUIZ_VERSION', '1.0.0');
 
-define('PLUGIN_DIR', plugin_dir_path(__DIR__));
-define('PLUGIN_FILE', plugin_basename(__FILE__));
-define('PLUGIN_BASE_NAME', plugin_basename(__DIR__));
-define('VELOCITY_QUIZ_DIR_URL', plugin_dir_url(__FILE__));
+/**
+ * Define constants
+ *
+ * @since 1.2.0
+ */
+if (!defined('VELOCITY_QUIZ_DIR'))	define('VELOCITY_QUIZ_DIR', plugin_dir_path(__FILE__)); // Plugin directory absolute path with the trailing slash. Useful for using with includes eg - /var/www/html/wp-content/plugins/velocity-quiz/
+if (!defined('VELOCITY_QUIZ_DIR_URI'))	define('VELOCITY_QUIZ_DIR_URI', plugin_dir_url(__FILE__)); // URL to the plugin folder with the trailing slash. Useful for referencing src eg - http://localhost/wp-content/plugins/velocity-quiz/
 
+/**
+ * The code that runs during plugin activation.
+ * This action is documented in classes/class-velocity-quiz-activator.php
+ */
+function activate_velocity_quiz()
+{
+	require_once VELOCITY_QUIZ_DIR . 'classes/class-velocity-quiz-activator.php';
+	Velocity_Quiz_Activator::activate();
+}
+
+/**
+ * The code that runs during plugin deactivation.
+ * This action is documented in classes/class-velocity-quiz-deactivator.php
+ */
+function deactivate_velocity_quiz()
+{
+	require_once VELOCITY_QUIZ_DIR . 'classes/class-velocity-quiz-deactivator.php';
+	Velocity_Quiz_Deactivator::deactivate();
+}
+
+register_activation_hook(__FILE__, 'activate_velocity_quiz');
+register_deactivation_hook(__FILE__, 'deactivate_velocity_quiz');
 
 
 function velocity_quiz() {
     ob_start();
-    require_once(plugin_dir_path(__FILE__).'/inc/page-quiz.php');
+    require_once(VELOCITY_QUIZ_DIR.'/inc/page-quiz.php');
     return ob_get_clean();
 }
 add_shortcode ('velocity-quiz', 'velocity_quiz');
