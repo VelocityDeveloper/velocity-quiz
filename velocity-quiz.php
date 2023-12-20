@@ -40,3 +40,12 @@ define('PLUGIN_DIR', plugin_dir_path(__DIR__));
 define('PLUGIN_FILE', plugin_basename(__FILE__));
 define('PLUGIN_BASE_NAME', plugin_basename(__DIR__));
 define('VELOCITY_QUIZ_DIR_URL', plugin_dir_url(__FILE__));
+
+
+
+function velocity_quiz() {
+    ob_start();
+    require_once(plugin_dir_path(__FILE__).'/inc/page-quiz.php');
+    return ob_get_clean();
+}
+add_shortcode ('velocity-quiz', 'velocity_quiz');
