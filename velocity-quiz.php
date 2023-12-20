@@ -28,3 +28,15 @@
 if (!defined('WPINC')) {
 	die;
 }
+
+/**
+ * Currently plugin version.
+ * Start at version 1.0.0 and use SemVer - https://semver.org
+ * Rename this for your plugin and update it as you release new versions.
+ */
+define('VELOCITY_QUIZ_VERSION', '1.0.0');
+
+define('PLUGIN_DIR', plugin_dir_path(__DIR__));
+define('PLUGIN_FILE', plugin_basename(__FILE__));
+define('PLUGIN_BASE_NAME', plugin_basename(__DIR__));
+define('VELOCITY_QUIZ_DIR_URL', plugin_dir_url(__FILE__));
