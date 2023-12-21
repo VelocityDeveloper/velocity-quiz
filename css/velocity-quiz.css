@@ -1,0 +1,16 @@
+.velocity-form-control {
+    padding: 20px;
+    border: 1px solid #dddddd;
+    margin-bottom: 20px;
+    position: relative;
+}
+.vd-hapus {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+    color: #d10000;
+}
