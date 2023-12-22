@@ -15,10 +15,9 @@
     color: #d10000;
 }
 .vd-field-title {
-    font-size: 15px;
-    font-weight: bold;
-    margin-top: 30px;
-    margin-bottom: 10px;
+    font-size: 15px !important;
+    font-weight: bold !important;
+    margin-bottom: 10px !important;
 }
 .vd-upload-file {
     padding: 10px;
