@@ -24,3 +24,7 @@
     padding: 10px;
     border: 1px solid #dddddd;
 }
+.soalradio:checked + .soalradiolabel .radio-elv {
+    background: #118711;
+    color: #fff;
+  }

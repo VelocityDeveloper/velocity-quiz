@@ -88,3 +88,14 @@ function enqueue_admin_scripts() {
 }
 add_action('admin_enqueue_scripts', 'enqueue_admin_scripts');
 
+
+function velocity_quiz_single($single_template) {
+    global $post;
+
+    if ($post->post_type == 'velocity-quiz') {
+        $single_template = VELOCITY_QUIZ_DIR.'inc/quiz-tampil.php';
+    }
+
+    return $single_template;
+}
+add_filter('single_template', 'velocity_quiz_single');
