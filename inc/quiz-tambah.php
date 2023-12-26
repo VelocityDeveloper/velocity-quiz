@@ -13,7 +13,6 @@ $safe               = isset($_POST['safe']) ? $_POST['safe'] : '';
 // echo '<pre>'.print_r($all_meta_values,1).'</pre>';
 
 if ($quiz) {
-  echo '<pre>'.print_r($quiz,1).'</pre>';
   // Loop melalui sub-array 'tanya'
   foreach ($quiz['tanya'] as $key => $value) {
     // Membuat array baru dengan struktur yang diinginkan
@@ -54,7 +53,7 @@ if ($post_title && $quiz) {
 }
 ?>
 
-<form method="post">
+<form method="post" enctype="multipart/form-data">
   <div class="velocity-field">
 
     <div class="border p-3 mb-3">
@@ -104,7 +103,7 @@ if ($post_title && $quiz) {
     <div class="velocity-form-control">
 
       <h5 class="vd-field-title mt-0">Soal</h5>
-      <textarea class="form-control" id="ask" name="quiz[tanya][]"></textarea>
+      <textarea class="form-control" id="ask" name="quiz[tanya][]" required></textarea>
 
     <?php $pilihan_jawaban = '<h5 class="vd-field-title">Pilihan Jawaban</h5>';
         $pilihan_jawaban .= '<div class="input-group mb-2">';

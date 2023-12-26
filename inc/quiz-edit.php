@@ -2,19 +2,18 @@
 <?php
 $post_id = isset($_GET['id']) ? $_GET['id'] : '';
 $post_title         = isset($_POST['post_title']) ? $_POST['post_title'] : get_the_title($post_id);
-$post_content       = isset($_POST['post_content']) ? $_POST['post_content'] : '';
-$post_categories    = isset($_POST['quizcat']) ? $_POST['quizcat'] : '';
-$quiz               = isset($_POST['quiz']) ? $_POST['quiz'] : '';
-$status             = isset($_POST['status']) ? $_POST['status'] : '';
-$waktu              = isset($_POST['waktu']) ? $_POST['waktu'] : '';
-$tampil_nilai       = isset($_POST['tampil_nilai']) ? $_POST['tampil_nilai'] : '';
-$safe               = isset($_POST['safe']) ? $_POST['safe'] : '';
+$post_content       = isset($_POST['post_content']) ? $_POST['post_content'] : get_post_field('post_content', $post_id);
+$quiz_cat = wp_get_post_terms($post_id,'quiz-category');
+$quiz_cat_slug = $quiz_cat?$quiz_cat[0]->slug:'';
+$post_cat_slug    = isset($_POST['quizcat']) ? $_POST['quizcat'] : $quiz_cat_slug;
+$quiz               = isset($_POST['quiz']) ? $_POST['quiz'] : get_post_meta($post_id,'quiz',true);
+$status             = isset($_POST['status']) ? $_POST['status'] : get_post_status($post_id);
+$waktu              = isset($_POST['waktu']) ? $_POST['waktu'] : get_post_meta($post_id,'waktu',true);
+$tampil_nilai       = isset($_POST['tampil_nilai']) ? $_POST['tampil_nilai'] : get_post_meta($post_id,'tampil_nilai',true);
+$safe               = isset($_POST['safe']) ? $_POST['safe'] : get_post_meta($post_id,'safe',true);
 
-// $all_meta_values = get_post_meta(52,'quiz',false);
-// echo '<pre>'.print_r($all_meta_values,1).'</pre>';
 
-if ($quiz) {
-  echo '<pre>'.print_r($quiz,1).'</pre>';
+if (isset($_POST['quiz'])) {
   // Loop melalui sub-array 'tanya'
   foreach ($quiz['tanya'] as $key => $value) {
     // Membuat array baru dengan struktur yang diinginkan
@@ -31,51 +30,48 @@ if ($quiz) {
   $quiz = $new_quiz_array;
 }
 
-/*
-if ($post_title && $quiz) {
-// Replace $post_id dengan ID posting yang ingin diubah
-$post_id = 123;
+if (isset($_POST['quiz']) && isset($_POST['post_title'])) {
+    $actual_link    = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+    // Ambil data posting
+    $post_data = array(
+        'ID'         => $post_id,
+        'post_title' => $post_title,
+        'post_content' => $post_content,
+    );
 
-// Data custom taxonomy yang ingin diubah
-$new_taxonomy_value = 'new-term-slug'; // Ganti dengan nilai yang sesuai
+    // Perbarui posting
+    $result = wp_update_post($post_data);
 
-// Ambil data posting
-$post_data = array(
-    'ID'         => $post_id,
-    'post_title' => 'Judul Baru',
-    'post_content' => 'Konten Baru',
-);
+    // Set custom taxonomy
+    if (!is_wp_error($result) && $post_cat_slug) {
+        wp_set_post_terms($post_id, $post_cat_slug, 'quiz-category');
+    }
 
-// Perbarui posting
-$result = wp_update_post($post_data);
-
-// Perbarui atau tambahkan post meta
-update_post_meta($post_id, 'nama_meta_key', $new_meta_value);
-
-// Set custom taxonomy
-if (!is_wp_error($result)) {
-    wp_set_post_terms($post_id, $new_taxonomy_value, 'nama_taxonomy'); // Ganti 'nama_taxonomy' dengan nama taxonomy yang sesuai
+    if ($result !== 0) {
+        // Perbarui atau tambahkan post meta
+        update_post_meta($post_id,'waktu',$waktu);
+        update_post_meta($post_id,'tampil_nilai',$tampil_nilai);
+        update_post_meta($post_id,'safe',$safe);
+        update_post_meta($post_id,'quiz',$quiz);
+        echo '<div class="alert alert-success">Quiz berhasil diperbarui.</div>';
+        echo '<script>window.setTimeout(function(){
+            window.location.href = "'.$actual_link.'";
+        }, 1500);</script>';
+    } else {
+        echo '<div class="alert alert-danger">Quiz gagal diperbarui.</div>';
+    }
 }
-
-if ($result !== 0) {
-    echo "Posting dengan ID $post_id berhasil diperbarui. Custom Taxonomy juga diperbarui.";
-} else {
-    echo "Gagal memperbarui posting dengan ID $post_id.";
-}
-}
-*/
 ?>
 
-<form method="post">
+<form method="post" enctype="multipart/form-data">
   <div class="velocity-field">
 
     <div class="border p-3 mb-3">
       <h5 class="vd-field-title mt-0">Judul Quiz</h5>
-      <input type="text" class="form-control" name="post_title" required>
+      <input type="text" class="form-control" name="post_title" value="<?php echo $post_title; ?>" required>
 
       <h5 class="vd-field-title">Keterangan</h5>
-      <?php $val = '';
-      wp_editor($val,'post_content'); ?>
+      <?php wp_editor($post_content,'post_content'); ?>
 
       <?php 
       $tax_args = array(
@@ -87,25 +83,26 @@ if ($result !== 0) {
       <select class="form-select" name="quizcat">
         <option value="">Pilih Kategori</option>
         <?php foreach ($terms as $term) {
-          echo '<option value="' . $term->slug . '">' . $term->name . '</option>';
+            $selected = $post_cat_slug == $term->slug ? ' selected="selected"':'';
+            echo '<option value="' . $term->slug . '"'.$selected.'>' . $term->name . '</option>';
         } ?>
       </select>
 
       <h5 class="vd-field-title">Waktu Pengerjaan</h5>
-      <input type="number" class="form-control" name="waktu">
+      <input type="number" class="form-control" name="waktu" value="<?php echo $waktu; ?>">
       <small class="text-muted">Dalam menit. Kosongkan jika tanpa batas waktu pengerjaan.</small>
 
       <h5 class="vd-field-title">Tampil Nilai</h5>
       <select class="form-select" name="tampil_nilai">
-        <option value="Ya">Ya</option>
-        <option value="Tidak">Tidak</option>
+        <option value="Ya"<?php echo $tampil_nilai == 'Ya' ? ' selected="selected"':'';?>>Ya</option>
+        <option value="Tidak"<?php echo $tampil_nilai == 'Tidak' ? ' selected="selected"':'';?>>Tidak</option>
       </select>
       <small class="text-muted">Jika aktif, hasil nilai akan langsung keluar.</small>
 
       <h5 class="vd-field-title">Keamanan</h5>
       <select class="form-select" name="safe">
-        <option value="Tidak">Tidak</option>
-        <option value="Ya">Ya</option>
+        <option value="Tidak"<?php echo $safe == 'Tidak' ? ' selected="selected"':'';?>>Tidak</option>
+        <option value="Ya"<?php echo $safe == 'Ya' ? ' selected="selected"':'';?>>Ya</option>
       </select>
       <small class="text-muted">Jika aktif, ujian dianggap selesai jika meninggalkan tabs atau browser ketika ujian berlangsung.</small>
 
@@ -113,12 +110,8 @@ if ($result !== 0) {
 
 
     <h4 class="fs-5 fw-bold mt-4">Pertanyaan</h5>
-    <div class="velocity-form-control">
 
-      <h5 class="vd-field-title mt-0">Soal</h5>
-      <textarea class="form-control" id="ask" name="quiz[tanya][]"></textarea>
-
-    <?php $pilihan_jawaban = '<h5 class="vd-field-title">Pilihan Jawaban</h5>';
+<?php $pilihan_jawaban = '<h5 class="vd-field-title">Pilihan Jawaban</h5>';
         $pilihan_jawaban .= '<div class="input-group mb-2">';
           $pilihan_jawaban .= '<div class="input-group-prepend"><div class="input-group-text">A</div></div>';
           $pilihan_jawaban .= '<input type="text" class="form-control" name="quiz[a][]" value="" required="">';
@@ -135,47 +128,89 @@ if ($result !== 0) {
           $pilihan_jawaban .= '<div class="input-group-prepend"><div class="input-group-text">D</div></div>';
           $pilihan_jawaban .= '<input type="text" class="form-control" name="quiz[d][]" value="" required="">';
         $pilihan_jawaban .= '</div>';
-        echo $pilihan_jawaban;
-        ?>
 
-      <?php $jawaban = '<div class="form-group">';
-          $jawaban .= '<h5 class="vd-field-title">Jawaban Benar</h5>';
-          $jawaban .= '<select class="form-control" name="quiz[jawaban][]" required="">';
-            $jawaban .= '<option value="a">A</option>';
-            $jawaban .= '<option value="b">B</option>';
-            $jawaban .= '<option value="c">C</option>';
-            $jawaban .= '<option value="d">D</option>';
-          $jawaban .= '</select>';
-          $jawaban .= '</div>';
-        echo $jawaban;
-        ?>
+        $jawaban = '<div class="form-group">';
+        $jawaban .= '<h5 class="vd-field-title">Jawaban Benar</h5>';
+        $jawaban .= '<select class="form-control" name="quiz[jawaban][]" required="">';
+          $jawaban .= '<option value="a">A</option>';
+          $jawaban .= '<option value="b">B</option>';
+          $jawaban .= '<option value="c">C</option>';
+          $jawaban .= '<option value="d">D</option>';
+        $jawaban .= '</select>';
+        $jawaban .= '</div>';
+
+$no = 0;
+if($quiz) {
+    $i = 1;
+    foreach ($quiz as $data) {
+        $no = $i++; ?>
+        <div class="velocity-form-control" id="velocity-field-<?php echo $no;?>">
+            <div class="vd-hapus" onClick="hapus('velocity-field-<?php echo $no;?>')">x</div>
+            <h5 class="vd-field-title mt-0">Soal</h5>
+            <textarea class="tanya-awal form-control" id="ask-<?php echo $no;?>" name="quiz[tanya][]"><?php echo $data['tanya'];?></textarea>
+            <?php 
+        $array_pl = ['a'=>'A','b'=>'B','c'=>'C','d'=>'D'];
+
+        echo '<h5 class="vd-field-title">Pilihan Jawaban</h5>';
+        foreach($array_pl as $key => $value){
+            echo '<div class="input-group mb-2">';
+                echo '<div class="input-group-prepend"><div class="input-group-text text-uppercase">'.$key.'</div></div>';
+                echo '<input type="text" class="form-control" name="quiz['.$key.'][]" value="'.$data[$key].'" required="">';
+            echo '</div>';
+        }
+
+        echo '<div class="form-group">';
+        echo '<h5 class="vd-field-title">Jawaban Benar</h5>';
+        echo '<select class="form-control" name="quiz[jawaban][]" required="">';
+            foreach($array_pl as $key => $value){
+                $selected = $data['jawaban'] == $key ? ' selected' : '';
+                echo '<option value="'.$key.'"'.$selected.'>'.$value.'</option>';
+            }
+            echo '</select>';
+        echo '</div>'; ?>
+
+        </div>
+    <?php }
+    $jumlah_quiz = count($quiz);
+} else { // jika quiz kosong 
+    $no = 1;
+    $jumlah_quiz = 1; ?>
+    <div class="velocity-form-control">
+        <h5 class="vd-field-title mt-0">Soal</h5>
+        <textarea class="tanya-awal form-control" id="ask-<?php echo $no;?>" name="quiz[tanya][]"></textarea>
+        <?php echo $pilihan_jawaban; ?>
+        <?php echo $jawaban; ?>
     </div>
+<?php } ?>
+
   </div>
   <h5 class="vd-field-title mt-3">Pilih Status</h5>
   <select class="form-select mb-4" name="status" required="">
-    <option value="publish">Publish</option>
-    <option value="draft">Draft</option>
+    <option value="publish"<?php echo $status == 'publish' ? ' selected="selected"':'';?>>Publish</option>
+    <option value="draft"<?php echo $status == 'draft' ? ' selected="selected"':'';?>>Draft</option>
   </select>
 
   <div id="tambah" class="btn btn-info text-white">Tambah Soal</div>
   <button type="submit" class="btn btn-success">Simpan</button>
+  <div class="btn btn-danger hapus-quiz">Hapus</div>
 </form>
 
 <?php echo wp_enqueue_editor(); ?>
 <?php echo wp_enqueue_media(); ?>
 
+<div class="jumlah-soal"></div>
+
 <script>
-  function hapus(id) {
+function hapus(id) {
     if (confirm('Hapus ini?')){
       document.getElementById(id).remove();
     }
-  }
-
+}
 
 jQuery(function($) {
-  $.each( $('#ask'), function( i, editor ) {
+    <?php for ($x = 0; $x <= $jumlah_quiz; $x++) { ?>
     wp.editor.initialize(
-      'ask',
+      'ask-<?php echo $x; ?>',
       {
         tinymce: {
           wpautop: true,
@@ -187,9 +222,9 @@ jQuery(function($) {
         mediaButtons: true,
       }
     );
-  });
+  <?php } ?>
 
-  var i = 1;  
+  var i = <?php echo $no; ?>;  
   $("#tambah").click(function(){
     i++;
     var function_hapus = "hapus('velocity-field-"+i+"');";
@@ -214,6 +249,20 @@ jQuery(function($) {
       }
     );
   });
+
+    $(".hapus-quiz").click(function(){
+      if (confirm("Apakah anda yakin ingin menghapus quiz ini?")) {
+            $.ajax({  
+            type: "POST",  
+            data: "action=hapusquiz&id=" + <?php echo $post_id; ?>, 
+            url: "<?php echo admin_url('admin-ajax.php');?>",
+            success:function(data) {
+                alert('Data berhasil dihapus.');
+                location.href = '<?php echo get_the_permalink(); ?>';
+            }
+        });
+      }
+    });
   
 });
 </script>
