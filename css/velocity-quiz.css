@@ -4,6 +4,21 @@
     margin-bottom: 20px;
     position: relative;
 }
+#jumlah-soal {
+    position: fixed;
+    z-index: 999;
+    bottom: 45px;
+    left: 10px;
+    background-color: #c50000;
+    width: 35px;
+    height: 35px;
+    text-align: center;
+    padding-top: 5px;
+    font-weight: bold;
+    color: #fff;
+    border-radius: 50%;
+    box-shadow: 0px 0px 5px 3px rgba(0,0,0,0.1);
+}
 .vd-hapus {
     position: absolute;
     top: 5px;
@@ -27,4 +42,4 @@
 .soalradio:checked + .soalradiolabel .radio-elv {
     background: #118711;
     color: #fff;
-  }
+}

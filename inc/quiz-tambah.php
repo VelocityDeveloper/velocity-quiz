@@ -151,12 +151,20 @@ if ($post_title && $quiz) {
 <?php echo wp_enqueue_editor(); ?>
 <?php echo wp_enqueue_media(); ?>
 
+<div id="jumlah-soal">1</div>
+
 <script>
-  function hapus(id) {
-    if (confirm('Hapus ini?')){
-      document.getElementById(id).remove();
-    }
+function hapus(id) {
+  if (confirm('Hapus ini?')){
+    document.getElementById(id).remove();
+        
+    // Get the count of elements with class 'velocity-form-control'
+    var count = document.getElementsByClassName('velocity-form-control').length;
+        
+    // Set the HTML content of 'jumlah-soal' element
+    document.getElementById('jumlah-soal').innerHTML = count;
   }
+}
 
 
 jQuery(function($) {
@@ -200,6 +208,11 @@ jQuery(function($) {
         mediaButtons: true,
       }
     );
+
+    // menghitung jumlah soal
+    var count = $(".velocity-form-control").length;
+    $("#jumlah-soal").html(count);
+
   });
   
 });

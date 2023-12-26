@@ -192,22 +192,30 @@ if($quiz) {
 
   <div id="tambah" class="btn btn-info text-white">Tambah Soal</div>
   <button type="submit" class="btn btn-success">Simpan</button>
-  <div class="btn btn-danger hapus-quiz">Hapus</div>
+  <div class="btn btn-danger hapus-quiz"><span class="vdhapus"></span>Hapus</div>
 </form>
 
 <?php echo wp_enqueue_editor(); ?>
 <?php echo wp_enqueue_media(); ?>
 
-<div class="jumlah-soal"></div>
+<div id="jumlah-soal"><?php echo $jumlah_quiz;?></div>
+
 
 <script>
 function hapus(id) {
     if (confirm('Hapus ini?')){
-      document.getElementById(id).remove();
+        document.getElementById(id).remove();
+        
+        // Get the count of elements with class 'velocity-form-control'
+        var count = document.getElementsByClassName('velocity-form-control').length;
+        
+        // Set the HTML content of 'jumlah-soal' element
+        document.getElementById('jumlah-soal').innerHTML = count;
     }
 }
 
 jQuery(function($) {
+
     <?php for ($x = 0; $x <= $jumlah_quiz; $x++) { ?>
     wp.editor.initialize(
       'ask-<?php echo $x; ?>',
@@ -222,45 +230,51 @@ jQuery(function($) {
         mediaButtons: true,
       }
     );
-  <?php } ?>
+    <?php } ?>
 
-  var i = <?php echo $no; ?>;  
-  $("#tambah").click(function(){
-    i++;
-    var function_hapus = "hapus('velocity-field-"+i+"');";
-    var awal = '<div class="velocity-form-control" id="velocity-field-'+i+'">';
-    var close = '<div class="vd-hapus" onClick="'+function_hapus+'">x</div>';
-    var ask = '<h5 class="vd-field-title">Soal</h5><textarea class="form-control" id="ask'+i+'" name="quiz[tanya][]"></textarea>';
-    var pj = '<?php echo $pilihan_jawaban;?>';
-    var jwb = '<?php echo $jawaban;?>';
-    var akhir = '</div>';
-    $(".velocity-field").append(awal+close+ask+pj+jwb+akhir);
-    wp.editor.initialize(
-      'ask'+i,
-      {
-        tinymce: {
-          wpautop: true,
-          plugins : 'charmap colorpicker compat3x directionality fullscreen hr image lists media paste tabfocus textcolor wordpress wpautoresize wpdialogs wpeditimage wpemoji wpgallery wplink wptextpattern wpview',
-          toolbar1: 'bold italic underline strikethrough | bullist numlist | blockquote hr wp_more | alignleft aligncenter alignright | link unlink | fullscreen | wp_adv',
-          toolbar2: 'formatselect alignjustify forecolor | pastetext removeformat charmap | outdent indent | undo redo | wp_help'
-        },
-        quicktags: true,
-        mediaButtons: true,
-      }
-    );
-  });
+    var i = <?php echo $no; ?>;  
+    $("#tambah").click(function(){
+        i++;
+        var function_hapus = "hapus('velocity-field-"+i+"');";
+        var awal = '<div class="velocity-form-control" id="velocity-field-'+i+'">';
+        var close = '<div class="vd-hapus" onClick="'+function_hapus+'">x</div>';
+        var ask = '<h5 class="vd-field-title">Soal</h5><textarea class="form-control" id="ask'+i+'" name="quiz[tanya][]"></textarea>';
+        var pj = '<?php echo $pilihan_jawaban;?>';
+        var jwb = '<?php echo $jawaban;?>';
+        var akhir = '</div>';
+        $(".velocity-field").append(awal+close+ask+pj+jwb+akhir);
+        wp.editor.initialize(
+        'ask'+i,
+        {
+            tinymce: {
+            wpautop: true,
+            plugins : 'charmap colorpicker compat3x directionality fullscreen hr image lists media paste tabfocus textcolor wordpress wpautoresize wpdialogs wpeditimage wpemoji wpgallery wplink wptextpattern wpview',
+            toolbar1: 'bold italic underline strikethrough | bullist numlist | blockquote hr wp_more | alignleft aligncenter alignright | link unlink | fullscreen | wp_adv',
+            toolbar2: 'formatselect alignjustify forecolor | pastetext removeformat charmap | outdent indent | undo redo | wp_help'
+            },
+            quicktags: true,
+            mediaButtons: true,
+        }
+        );
+
+        // menghitung jumlah soal
+        var count = $(".velocity-form-control").length;
+        $("#jumlah-soal").html(count);
+
+    });
 
     $(".hapus-quiz").click(function(){
       if (confirm("Apakah anda yakin ingin menghapus quiz ini?")) {
+            $(".vdhapus").addClass("spinner-grow spinner-grow-sm me-2");
             $.ajax({  
-            type: "POST",  
-            data: "action=hapusquiz&id=" + <?php echo $post_id; ?>, 
-            url: "<?php echo admin_url('admin-ajax.php');?>",
-            success:function(data) {
-                alert('Data berhasil dihapus.');
-                location.href = '<?php echo get_the_permalink(); ?>';
-            }
-        });
+                type: "POST",  
+                data: "action=hapusquiz&id=" + <?php echo $post_id; ?>, 
+                url: "<?php echo admin_url('admin-ajax.php');?>",
+                success:function(data) {
+                    alert('Data berhasil dihapus.');
+                    location.href = '<?php echo get_the_permalink(); ?>';
+                }
+            });
       }
     });
   
