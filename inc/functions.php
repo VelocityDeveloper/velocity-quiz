@@ -57,7 +57,16 @@ add_action( 'restrict_manage_posts', 'velocity_quiz_taxonomy_filters' );
 // shortcode
 function velocity_quiz() {
     ob_start();
-    require_once(VELOCITY_QUIZ_DIR.'/inc/page-quiz.php');
+	if(current_user_can('administrator')){
+    	require_once(VELOCITY_QUIZ_DIR.'/inc/page-quiz.php');
+	} elseif(is_user_logged_in()){
+		require_once(VELOCITY_QUIZ_DIR.'/inc/user-quiz.php');
+	} else {
+		$login_args = array(
+			'form_id' => 'velocity-login-form',
+		);
+		wp_login_form($login_args);
+	}
     return ob_get_clean();
 }
 add_shortcode ('velocity-quiz', 'velocity_quiz');
@@ -72,12 +81,12 @@ function velocity_quiz_scripts() {
 		wp_enqueue_script( 'vq-bootstrap-js', 'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js', array(), null, true );
 	}
 	wp_enqueue_style( 'vq-style', VELOCITY_QUIZ_DIR_URI . '/css/velocity-quiz.css');
-	// wp_enqueue_script( 'elearningjs', VELOCITY_QUIZ_DIR_URI . '/js.js', array(), null, true );
+	wp_enqueue_script( 'vq-js', VELOCITY_QUIZ_DIR_URI . '/js/velocity-quiz.js', array(), null, true );
 }
 add_action( 'wp_enqueue_scripts', 'velocity_quiz_scripts' );
 
 
-
+/*
 // Fungsi untuk menambahkan CSS & JavaScript ke halaman admin
 function enqueue_admin_scripts() {
     $post_type = isset($_GET['post_type']) ? $_GET['post_type'] : '';
@@ -87,15 +96,13 @@ function enqueue_admin_scripts() {
     }
 }
 add_action('admin_enqueue_scripts', 'enqueue_admin_scripts');
-
+*/
 
 function velocity_quiz_single($single_template) {
     global $post;
-
     if ($post->post_type == 'velocity-quiz') {
         $single_template = VELOCITY_QUIZ_DIR.'inc/quiz-tampil.php';
     }
-
     return $single_template;
 }
 add_filter('single_template', 'velocity_quiz_single');

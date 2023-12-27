@@ -2,13 +2,25 @@
 
 <div class="container">
 <?php while (have_posts()) : the_post(); ?>
-<?php $post_id = get_the_ID(); ?>
-    <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-        <h1><?php the_title(); ?></h1>
-        <div class="entry-content">
-            <?php the_content(); ?>
-            <?php $waktu = get_post_meta($post_id,'waktu',true);?>
-            <?php $tampil_nilai = get_post_meta($post_id,'tampil_nilai',true);?>
+<?php 
+global $wpdb;
+$table_quiz = $wpdb->prefix."velocity_quiz";
+$post_id = get_the_ID();
+$user_id = get_current_user_id();
+$sudahjawab = $wpdb->get_results("SELECT * FROM $table_quiz WHERE post_id = $post_id and user_id = $user_id"); ?>
+    <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>        
+        <?php 
+        $waktu = get_post_meta($post_id,'waktu',true);
+        $time = $waktu ? $waktu.' menit' : '-';
+        $tampil_nilai = get_post_meta($post_id,'tampil_nilai',true);
+        $date = date( 'd-m-Y H:i:s', current_time( 'timestamp', 0 ) );
+        $act = isset($_GET['act']) ? $_GET['act'] : '';
+        if(!is_user_logged_in()){
+            echo '<div class="alert alert-warning" role="alert">Silahkan masuk untuk melihat halaman ini.</div>';
+        } elseif ($sudahjawab) {
+            echo '<div class="alert alert-info" role="alert">Sudah anda kerjakan.</div>';
+        } elseif ($act == 'kerjakan' || isset($_SESSION['kerjaquiz'])) { ?>
+        <div class="quiz-content">
 
             <p id="countdown9"></p>
             <p id="countdown8" class="text-center mb-4"></p>
@@ -69,26 +81,28 @@
                 </div>
             </div>
             </form>
-            <div class="hasil-quiz mt-3"></div>
 
-        </div>
-    </article>
+    <?php
+    //set waktu
+    if (empty($_SESSION['kerjaquiz']['setwaktuawal'])) {
+        $_SESSION['kerjaquiz']['setwaktuawal'] = $date;
+        $endTime = strtotime("+".$waktu." minutes", strtotime($date));
+        $expTime = date('Y/m/d H:i:s', $endTime);
+    } else {
+        $to_time    = strtotime($date);
+        $from_time  = strtotime($_SESSION['kerjaquiz']['setwaktuawal']);
+        $bettime    = $to_time - $from_time;
+        $newmin     = $waktu?$waktu*60:0;
+        $newminute  = ceil($newmin-$bettime);
+        $endTime    = strtotime("+".$newminute." seconds", strtotime($date));
+        $expTime    = date('Y/m/d H:i:s', $endTime);
+    } ?>
 
-<?php
-  //set waktu
-if (empty($_SESSION['kerjaquiz']['setwaktuawal'])) {
-    $_SESSION['kerjaquiz']['setwaktuawal'] = $date;
-    $endTime = strtotime("+".$waktu." minutes", strtotime($date));
-    $expTime = date('Y/m/d H:i:s', $endTime);
-} else {
-    $to_time    = strtotime($date);
-    $from_time  = strtotime($_SESSION['kerjaquiz']['setwaktuawal']);
-    $bettime    = $to_time - $from_time;
-    $newmin     = $waktu?$waktu*60:0;
-    $newminute  = ceil($newmin-$bettime);
-    $endTime    = strtotime("+".$newminute." seconds", strtotime($date));
-    $expTime    = date('Y/m/d H:i:s', $endTime);
-} ?>
+    <?php 
+    //$_SESSION['kerjaquiz']['setwaktuawal'] = $date;
+    // echo '<pre>'.print_r($_SESSION['kerjaquiz'],1).'</pre>';
+    // unset($_SESSION['kerjaquiz']);
+    ?>
 
     <script>
     jQuery(document).ready(function($){
@@ -106,8 +120,7 @@ if (empty($_SESSION['kerjaquiz']['setwaktuawal'])) {
                 $('.footer-quiz').removeClass('d-none');                
             }
         });
-        $('.form-jawab').on('submit', function (e) {
-            e.preventDefault();
+        function inputhasilquiz() {
             var datas = $('.form-jawab').serialize();
             $(".load").html('<span class="spinner-grow spinner-grow-sm me-2"></span>');
             $.ajax({
@@ -115,13 +128,68 @@ if (empty($_SESSION['kerjaquiz']['setwaktuawal'])) {
                 data: "action=submitquiz&"+datas,
                 url: "<?php echo admin_url('admin-ajax.php'); ?>",
                 success:function(data) {
-                    $(".hasil-quiz").html(data);
+                    $(".quiz-content").html(data);
                     $(".load").html('');
-                }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.log('Error: ' + errorThrown);
+                },
             });
+        }
+        $('.form-jawab').on('submit', function (e) {
+            inputhasilquiz();
+            e.preventDefault();
         });
+        <?php if($waktu && !current_user_can('administrator')) { ?>
+            $('#countdown8').countdown('<?php echo $expTime; ?>')
+            .on('update.countdown', function(event) {
+            var format = '<div class="btn btn-secondary">%H</div> : <div class="btn btn-secondary">%M</div> : <div class="btn btn-secondary">%S</div>';
+            if(event.offset.totalDays > 0) {
+                format = '<div class="btn btn-secondary">%-d Hari </div> - ' + format;
+            }
+            if(event.offset.weeks > 0) {
+                format ='<div class="btn btn-secondary"> %-w Minggu </div> ' + format;
+            }
+            $(this).html(event.strftime(format));
+            })
+            .on('finish.countdown', function(e) {
+                $("#countdown9").html('<div class="mb-4"><div class="alert alert-danger mx-auto">Waktu Habis</div></div>');
+                inputhasilquiz();
+                e.preventDefault();
+            });
+        <?php } ?>
     });
-  </script>
+    </script>
+
+        </div>        
+        <?php 
+        } elseif (empty($_SESSION['kerjaquiz']) && !current_user_can('administrator')) {
+            echo '<div class="card mx-auto w-100 p-3" style="max-width: 500px;">';
+                echo '<h5 class="card-title border-bottom pb-3 text-center fw-bold">Detail Quiz</h5>';
+                echo '<table class="table"><tbody>';
+                echo '<tr>';
+                    echo '<td class="fw-bold">Nama Quiz</td>';
+                    echo '<td>:</td>';
+                    echo '<td>'.get_the_title($post_id).'</td>';
+                echo '</tr>';
+                echo '<tr>';
+                    echo '<td class="fw-bold">Waktu</td>';
+                    echo '<td>:</td>';
+                    echo '<td>'.$time.'</td>';
+                echo '</tr>';
+                echo '<tr>';
+                    echo '<td class="fw-bold">Keterangan</td>';
+                    echo '<td>:</td>';
+                    echo '<td>';
+                        echo the_content();
+                    echo '</td>';
+                echo '</tr>';
+                echo '</tbody></table>';
+                echo '<a class="btn btn-success" href="?act=kerjakan">Kerjakan</a>';
+            echo '</div>';
+         } ?>
+    </article>
+
 <?php endwhile; ?>
 </div>
 

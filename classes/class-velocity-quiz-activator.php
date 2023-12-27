@@ -37,10 +37,10 @@ class Velocity_Quiz_Activator {
 
         $sqlv_quiz = "CREATE TABLE IF NOT EXISTS $v_quiz (
                 id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-                tipe text NOT NULL,
-                tanggal text NOT NULL,
-                iduser text NOT NULL,
-                tujuan text NOT NULL,
+                type varchar(20) NOT NULL,
+                date datetime NOT NULL,
+                user_id bigint(20) NOT NULL,
+                post_id bigint(20) NOT NULL,
                 detail text NOT NULL,
                 PRIMARY KEY (id)
         );";
