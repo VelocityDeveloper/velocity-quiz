@@ -45,10 +45,10 @@ function submitquiz_ajax() {
             'detail'  => json_encode($array_jawaban),
         ));
     }
-    echo '<div class="card mx-auto w-100" style="max-width: 300px;">';
+    echo '<div class="card mx-auto w-100" style="max-width: 500px;">';
         echo '<div class="card-hasil-nilai card-body text-center bg-nilai">';
 			if($tampilnilai=='Ya') {
-				echo '<h3 class="card-title">Nilai anda : </h3>';
+				echo '<h3 class="card-title">Nilai anda:</h3>';
 				echo '<p class="card-text h1 fs-1">'.$nilai.'</p>';
 			} else {
 				echo '<h3 class="card-text h2 text-white">Quiz telah selesai</h3>';

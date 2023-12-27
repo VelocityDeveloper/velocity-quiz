@@ -7,18 +7,60 @@ global $wpdb;
 $table_quiz = $wpdb->prefix."velocity_quiz";
 $post_id = get_the_ID();
 $user_id = get_current_user_id();
-$sudahjawab = $wpdb->get_results("SELECT * FROM $table_quiz WHERE post_id = $post_id and user_id = $user_id"); ?>
+$sudahjawab = $wpdb->get_results("SELECT * FROM $table_quiz WHERE post_id = $post_id and user_id = $user_id");
+$waktu = get_post_meta($post_id,'waktu',true);
+$time = $waktu ? $waktu.' menit' : '-';
+$tampil_nilai = get_post_meta($post_id,'tampil_nilai',true);
+$date = date( 'd-m-Y H:i:s', current_time( 'timestamp', 0 ) );
+$act = isset($_GET['act']) ? $_GET['act'] : '';
+
+$infoquiz = '<h5 class="card-title border-bottom pb-3 text-center fw-bold">Detail Quiz</h5>';
+$infoquiz .= '<table class="table"><tbody>';
+$infoquiz .= '<tr>';
+    $infoquiz .= '<td class="fw-bold">Nama Quiz</td>';
+    $infoquiz .= '<td>:</td>';
+    $infoquiz .= '<td>'.get_the_title($post_id).'</td>';
+$infoquiz .= '</tr>';
+$infoquiz .= '<tr>';
+    $infoquiz .= '<td class="fw-bold">Waktu</td>';
+    $infoquiz .= '<td>:</td>';
+    $infoquiz .= '<td>'.$time.'</td>';
+$infoquiz .= '</tr>';
+$infoquiz .= '<tr>';
+    $infoquiz .= '<td class="fw-bold">Keterangan</td>';
+    $infoquiz .= '<td>:</td>';
+    $infoquiz .= '<td>';
+        $infoquiz .= get_the_content($post_id);
+    $infoquiz .= '</td>';
+$infoquiz .= '</tr>';
+$infoquiz .= '</tbody></table>';
+?>
     <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>        
         <?php 
-        $waktu = get_post_meta($post_id,'waktu',true);
-        $time = $waktu ? $waktu.' menit' : '-';
-        $tampil_nilai = get_post_meta($post_id,'tampil_nilai',true);
-        $date = date( 'd-m-Y H:i:s', current_time( 'timestamp', 0 ) );
-        $act = isset($_GET['act']) ? $_GET['act'] : '';
         if(!is_user_logged_in()){
             echo '<div class="alert alert-warning" role="alert">Silahkan masuk untuk melihat halaman ini.</div>';
         } elseif ($sudahjawab) {
-            echo '<div class="alert alert-info" role="alert">Sudah anda kerjakan.</div>';
+            $detailquiz = $sudahjawab[0]->detail;
+            $detail = json_decode($detailquiz);
+            $hasil_nilai = $detail->nilai;
+            $jml_benar = $detail->benar;
+            $jml_salah = $detail->salah;
+            $jumlahsoal = $jml_benar + $jml_salah;         
+            echo '<div class="card mx-auto w-100 mb-3" style="max-width: 500px;">';
+                echo '<div class="card-hasil-nilai card-body text-center bg-nilai">';
+                    echo '<h3 class="card-title">Nilai anda:</h3>';
+                    echo '<p class="card-text h1 fs-1">'.$hasil_nilai.'</p>';
+                echo '</div>';
+                echo '<ul class="list-group list-group-flush">';
+                    echo '<li class="list-group-item"><i class="fa fa-check text-success"></i> Benar = '.$jml_benar.'</li>';
+                    echo '<li class="list-group-item"><i class="fa fa-close text-danger"></i> Salah = '.$jml_salah.'</li>';
+                    echo '<li class="list-group-item"><i class="fa fa-wpforms"></i> Jumlah Soal = '.$jumlahsoal.'</li>';
+                echo '</ul>';
+            echo '</div>';
+
+            echo '<div class="card mx-auto w-100 p-3" style="max-width: 500px;">';
+                echo $infoquiz;
+            echo '</div>';
         } elseif ($act == 'kerjakan' || isset($_SESSION['kerjaquiz'])) { ?>
         <div class="quiz-content">
 
@@ -165,26 +207,7 @@ $sudahjawab = $wpdb->get_results("SELECT * FROM $table_quiz WHERE post_id = $pos
         <?php 
         } elseif (empty($_SESSION['kerjaquiz']) && !current_user_can('administrator')) {
             echo '<div class="card mx-auto w-100 p-3" style="max-width: 500px;">';
-                echo '<h5 class="card-title border-bottom pb-3 text-center fw-bold">Detail Quiz</h5>';
-                echo '<table class="table"><tbody>';
-                echo '<tr>';
-                    echo '<td class="fw-bold">Nama Quiz</td>';
-                    echo '<td>:</td>';
-                    echo '<td>'.get_the_title($post_id).'</td>';
-                echo '</tr>';
-                echo '<tr>';
-                    echo '<td class="fw-bold">Waktu</td>';
-                    echo '<td>:</td>';
-                    echo '<td>'.$time.'</td>';
-                echo '</tr>';
-                echo '<tr>';
-                    echo '<td class="fw-bold">Keterangan</td>';
-                    echo '<td>:</td>';
-                    echo '<td>';
-                        echo the_content();
-                    echo '</td>';
-                echo '</tr>';
-                echo '</tbody></table>';
+                echo $infoquiz;
                 echo '<a class="btn btn-success" href="?act=kerjakan">Kerjakan</a>';
             echo '</div>';
          } ?>

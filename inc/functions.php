@@ -54,24 +54,6 @@ function velocity_quiz_taxonomy_filters() {
 add_action( 'restrict_manage_posts', 'velocity_quiz_taxonomy_filters' );
 
 
-// shortcode
-function velocity_quiz() {
-    ob_start();
-	if(current_user_can('administrator')){
-    	require_once(VELOCITY_QUIZ_DIR.'/inc/page-quiz.php');
-	} elseif(is_user_logged_in()){
-		require_once(VELOCITY_QUIZ_DIR.'/inc/user-quiz.php');
-	} else {
-		$login_args = array(
-			'form_id' => 'velocity-login-form',
-		);
-		wp_login_form($login_args);
-	}
-    return ob_get_clean();
-}
-add_shortcode ('velocity-quiz', 'velocity_quiz');
-
-
 
 // Add custome scripts and styles
 function velocity_quiz_scripts() {
@@ -98,6 +80,32 @@ function enqueue_admin_scripts() {
 add_action('admin_enqueue_scripts', 'enqueue_admin_scripts');
 */
 
+
+// Fungsi yang akan dijalankan ketika pengguna dihapus
+function velocity_quiz_on_user_delete($user_id) {
+	global $wpdb;
+	$table_quiz = $wpdb->prefix."velocity_quiz";
+	$ada = $wpdb->get_results("SELECT * FROM $table_quiz WHERE user_id = $user_id");
+	if($ada){
+		$wpdb->delete($table_quiz, array('user_id' => $user_id,));
+	}
+}
+add_action('delete_user', 'velocity_quiz_on_user_delete');
+
+
+// Fungsi yang akan dijalankan setelah posting dihapus
+function velocity_quiz_on_delete_post($post_id) {
+	global $wpdb;
+	$table_quiz = $wpdb->prefix."velocity_quiz";
+	$ada = $wpdb->get_results("SELECT * FROM $table_quiz WHERE post_id = $post_id");
+	if($ada){
+		$wpdb->delete($table_quiz, array('post_id' => $post_id,));
+	}
+}
+add_action('delete_post', 'velocity_quiz_on_delete_post');
+
+
+// mengatur template default single quiz
 function velocity_quiz_single($single_template) {
     global $post;
     if ($post->post_type == 'velocity-quiz') {
@@ -106,3 +114,21 @@ function velocity_quiz_single($single_template) {
     return $single_template;
 }
 add_filter('single_template', 'velocity_quiz_single');
+
+
+// shortcode
+function velocity_quiz() {
+    ob_start();
+	if(current_user_can('administrator')){
+    	require_once(VELOCITY_QUIZ_DIR.'/inc/page-quiz.php');
+	} elseif(is_user_logged_in()){
+		require_once(VELOCITY_QUIZ_DIR.'/inc/user-quiz.php');
+	} else {
+		$login_args = array(
+			'form_id' => 'velocity-login-form',
+		);
+		wp_login_form($login_args);
+	}
+    return ob_get_clean();
+}
+add_shortcode ('velocity-quiz', 'velocity_quiz');
