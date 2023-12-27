@@ -7,7 +7,6 @@ $quiz               = isset($_POST['quiz']) ? $_POST['quiz'] : '';
 $status             = isset($_POST['status']) ? $_POST['status'] : '';
 $waktu              = isset($_POST['waktu']) ? $_POST['waktu'] : '';
 $tampil_nilai       = isset($_POST['tampil_nilai']) ? $_POST['tampil_nilai'] : '';
-$safe               = isset($_POST['safe']) ? $_POST['safe'] : '';
 
 // $all_meta_values = get_post_meta(52,'quiz',false);
 // echo '<pre>'.print_r($all_meta_values,1).'</pre>';
@@ -44,7 +43,6 @@ if ($post_title && $quiz) {
     }
     update_post_meta($pid,'waktu',$waktu);
     update_post_meta($pid,'tampil_nilai',$tampil_nilai);
-    update_post_meta($pid,'safe',$safe);
     update_post_meta($pid,'quiz',$quiz);
     echo '<div class="alert alert-success">Quiz berhasil disimpan.</div>';
   } else {
@@ -88,13 +86,6 @@ if ($post_title && $quiz) {
         <option value="Tidak">Tidak</option>
       </select>
       <small class="text-muted">Jika aktif, hasil nilai akan langsung keluar.</small>
-
-      <h5 class="vd-field-title">Keamanan</h5>
-      <select class="form-select" name="safe">
-        <option value="Tidak">Tidak</option>
-        <option value="Ya">Ya</option>
-      </select>
-      <small class="text-muted">Jika aktif, ujian dianggap selesai jika meninggalkan tabs atau browser ketika ujian berlangsung.</small>
 
     </div>
 

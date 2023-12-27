@@ -9,7 +9,6 @@
             <?php the_content(); ?>
             <?php $waktu = get_post_meta($post_id,'waktu',true);?>
             <?php $tampil_nilai = get_post_meta($post_id,'tampil_nilai',true);?>
-            <?php $safe = get_post_meta($post_id,'safe',true);?>
 
             <p id="countdown9"></p>
             <p id="countdown8" class="text-center mb-4"></p>
@@ -74,6 +73,23 @@
 
         </div>
     </article>
+
+<?php
+  //set waktu
+if (empty($_SESSION['kerjaquiz']['setwaktuawal'])) {
+    $_SESSION['kerjaquiz']['setwaktuawal'] = $date;
+    $endTime = strtotime("+".$waktu." minutes", strtotime($date));
+    $expTime = date('Y/m/d H:i:s', $endTime);
+} else {
+    $to_time    = strtotime($date);
+    $from_time  = strtotime($_SESSION['kerjaquiz']['setwaktuawal']);
+    $bettime    = $to_time - $from_time;
+    $newmin     = $waktu?$waktu*60:0;
+    $newminute  = ceil($newmin-$bettime);
+    $endTime    = strtotime("+".$newminute." seconds", strtotime($date));
+    $expTime    = date('Y/m/d H:i:s', $endTime);
+} ?>
+
     <script>
     jQuery(document).ready(function($){
         $(document).on("click",".linksoal",function(e){

@@ -10,7 +10,6 @@ $quiz               = isset($_POST['quiz']) ? $_POST['quiz'] : get_post_meta($po
 $status             = isset($_POST['status']) ? $_POST['status'] : get_post_status($post_id);
 $waktu              = isset($_POST['waktu']) ? $_POST['waktu'] : get_post_meta($post_id,'waktu',true);
 $tampil_nilai       = isset($_POST['tampil_nilai']) ? $_POST['tampil_nilai'] : get_post_meta($post_id,'tampil_nilai',true);
-$safe               = isset($_POST['safe']) ? $_POST['safe'] : get_post_meta($post_id,'safe',true);
 
 
 if (isset($_POST['quiz'])) {
@@ -51,7 +50,6 @@ if (isset($_POST['quiz']) && isset($_POST['post_title'])) {
         // Perbarui atau tambahkan post meta
         update_post_meta($post_id,'waktu',$waktu);
         update_post_meta($post_id,'tampil_nilai',$tampil_nilai);
-        update_post_meta($post_id,'safe',$safe);
         update_post_meta($post_id,'quiz',$quiz);
         echo '<div class="alert alert-success">Quiz berhasil diperbarui.</div>';
         echo '<script>window.setTimeout(function(){
@@ -98,14 +96,7 @@ if (isset($_POST['quiz']) && isset($_POST['post_title'])) {
         <option value="Tidak"<?php echo $tampil_nilai == 'Tidak' ? ' selected="selected"':'';?>>Tidak</option>
       </select>
       <small class="text-muted">Jika aktif, hasil nilai akan langsung keluar.</small>
-
-      <h5 class="vd-field-title">Keamanan</h5>
-      <select class="form-select" name="safe">
-        <option value="Tidak"<?php echo $safe == 'Tidak' ? ' selected="selected"':'';?>>Tidak</option>
-        <option value="Ya"<?php echo $safe == 'Ya' ? ' selected="selected"':'';?>>Ya</option>
-      </select>
-      <small class="text-muted">Jika aktif, ujian dianggap selesai jika meninggalkan tabs atau browser ketika ujian berlangsung.</small>
-
+      
     </div>
 
 
