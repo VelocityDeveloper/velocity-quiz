@@ -11,8 +11,8 @@
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">MENU</a>
           <ul class="dropdown-menu dropdown-menu-primary" aria-labelledby="navbarDarkDropdownMenuLink">
-            <li><a class="dropdown-item" href="<?php get_the_permalink();?>?">Halaman Depan Quiz</a></li>
-            <li><a class="dropdown-item" href="<?php get_the_permalink();?>?hal=tambah">Tambah Quiz</a></li>
+            <li><a class="dropdown-item" href="<?php get_the_permalink();?>?">Quiz</a></li>
+            <li><a class="dropdown-item" href="<?php get_the_permalink();?>?hal=essay">Essay</a></li>
           </ul>
         </li>
       </ul>

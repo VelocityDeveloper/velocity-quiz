@@ -48,4 +48,44 @@ class Velocity_Quiz_Activator {
 
     }
 
+    private static function create_custom_post_type() {
+        $new_post_type = array(
+            array(
+                'slug' => 'velocity-quiz',
+                'name' => 'Velocity Quiz',
+                'menu_icon' => 'dashicons-media-text',
+            ),
+            array(
+                'slug' => 'velocity-essay',
+                'name' => 'Velocity Essay',
+                'menu_icon' => 'dashicons-welcome-write-blog',
+            ),
+        );
+        foreach($new_post_type as $post_type){
+            $args = array(
+                'labels' => array(
+                    'name' => $post_type['name'],
+                    'singular_name' => $post_type['slug'],
+                ),
+                'menu_icon' => $post_type['menu_icon'],
+                'public' => true,
+                'has_archive' => true,
+                'taxonomies' => array('quiz-category'),
+                'supports' => array(
+                    'title',
+                    'editor',
+                ),
+            );
+            register_post_type($post_type['slug'], $args);
+        }
+    }
+
+    private static function create_custom_taxonomy() {
+        $args = array(
+            'label' => 'Kategori Kustom',
+            'public' => true,
+            'hierarchical' => true,
+        );
+        register_taxonomy('kategori_kustom', 'nama_post_type', $args);
+    }
 }

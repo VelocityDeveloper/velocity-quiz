@@ -11,7 +11,6 @@ function velocity_quiz_init() {
         'menu_icon' => 'dashicons-media-text',
         'public' => true,
         'has_archive' => true,
-		//'show_in_rest' => true, // Use Gutenberg
         'taxonomies' => array('quiz-category'),
         'supports' => array(
             'title',
@@ -28,30 +27,6 @@ function velocity_quiz_init() {
 		//'show_in_rest' => true, // Use Gutenberg
 	));
 }
-
-// taxonomy filter
-function velocity_quiz_taxonomy_filters() {
-	global $typenow; 
-	// an array of all the taxonomyies you want to display. Use the taxonomy name or slug
-	$taxonomies = array('quiz-category'); 
-	// must set this to the post type you want the filter(s) displayed on
-	if( $typenow == 'velocity-quiz' ){ 
-		foreach ($taxonomies as $tax_slug) {
-			$tax_obj = get_taxonomy($tax_slug);
-			$tax_name = $tax_obj->labels->name;
-			$terms = get_terms($tax_slug);
-			if(count($terms) > 0) {
-				echo "<select name='$tax_slug' id='$tax_slug' class='postform'>";
-				echo "<option value=''>All $tax_name</option>";
-				foreach ($terms as $term) { 
-					echo '<option value='. $term->slug, $_GET[$tax_slug] == $term->slug ? ' selected="selected"' : '','>' . $term->name .' (' . $term->count .')</option>'; 
-				}
-				echo "</select>";
-			}
-		}
-	}
-}
-add_action( 'restrict_manage_posts', 'velocity_quiz_taxonomy_filters' );
 
 
 
