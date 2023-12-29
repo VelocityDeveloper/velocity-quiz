@@ -1,8 +1,19 @@
+<?php
+$halaman = isset($_GET['hal']) ? $_GET['hal'] : '';
+$id = isset($_GET['id']) ? $_GET['id'] : '';
+$act = isset($_GET['act']) ? $_GET['act'] : '';
+if($halaman == 'essay'){
+  $title = 'Essay';
+} else {
+  $title = 'Quiz';
+}
+?>
+
 <div class="container">
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-3">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#"><?php echo get_bloginfo('name');?></a>
+    <a class="navbar-brand" href="#"><?php echo $title;?></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarNavDarkDropdown" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -21,10 +32,14 @@
 </nav>
 
 <?php
-$halaman = isset($_GET['hal']) ? $_GET['hal'] : '';
-$id = isset($_GET['id']) ? $_GET['id'] : '';
 
-if($halaman == 'tambah'){
+if($halaman == 'essay' && $act == 'tambah'){
+  include(VELOCITY_QUIZ_DIR.'/inc/essay-tambah.php');
+} else if($halaman == 'essay' && $act == 'edit'){
+  include(VELOCITY_QUIZ_DIR.'/inc/essay-edit.php');
+} else if($halaman == 'essay'){
+  include(VELOCITY_QUIZ_DIR.'/inc/essay-admin.php');
+} else if($halaman == 'tambah'){
   include(VELOCITY_QUIZ_DIR.'/inc/quiz-tambah.php');
 } else if($halaman == 'edit' && $id){
   include(VELOCITY_QUIZ_DIR.'/inc/quiz-edit.php');
@@ -80,7 +95,7 @@ if($halaman == 'tambah'){
         $(".h-"+get_id).addClass("spinner-grow spinner-grow-sm");
             $.ajax({  
             type: "POST",  
-            data: "action=hapusquiz&id=" + get_id, 
+            data: "action=hapuspost&id=" + get_id, 
             url: "'.admin_url('admin-ajax.php').'",
             success:function(data) {
               $(".quiz-" + get_id).remove();

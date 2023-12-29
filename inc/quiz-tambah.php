@@ -1,4 +1,3 @@
-
 <?php
 $post_title         = isset($_POST['post_title']) ? $_POST['post_title'] : '';
 $post_content       = isset($_POST['post_content']) ? $_POST['post_content'] : '';
@@ -29,7 +28,7 @@ if ($quiz) {
 }
 
 
-if ($post_title && $quiz) {
+if ($post_title) {
   $quiz_post = array(
     'post_title'    => $post_title,
     'post_content'  => $post_content,
@@ -43,7 +42,9 @@ if ($post_title && $quiz) {
     }
     update_post_meta($pid,'waktu',$waktu);
     update_post_meta($pid,'tampil_nilai',$tampil_nilai);
-    update_post_meta($pid,'quiz',$quiz);
+    if($quiz){
+      update_post_meta($pid,'quiz',$quiz);
+    }
     echo '<div class="alert alert-success">Quiz berhasil disimpan.</div>';
   } else {
     echo '<div class="alert alert-danger">Quiz gagal disimpan.</div>';
@@ -59,8 +60,7 @@ if ($post_title && $quiz) {
       <input type="text" class="form-control" name="post_title" required>
 
       <h5 class="vd-field-title">Keterangan</h5>
-      <?php $val = '';
-      wp_editor($val,'post_content'); ?>
+      <?php wp_editor('','post_content'); ?>
 
       <?php 
       $tax_args = array(
@@ -90,12 +90,6 @@ if ($post_title && $quiz) {
     </div>
 
 
-    <h4 class="fs-5 fw-bold mt-4">Pertanyaan</h5>
-    <div class="velocity-form-control">
-
-      <h5 class="vd-field-title mt-0">Soal</h5>
-      <textarea class="form-control" id="ask" name="quiz[tanya][]" required></textarea>
-
     <?php $pilihan_jawaban = '<h5 class="vd-field-title">Pilihan Jawaban</h5>';
         $pilihan_jawaban .= '<div class="input-group mb-2">';
           $pilihan_jawaban .= '<div class="input-group-prepend"><div class="input-group-text">A</div></div>';
@@ -113,7 +107,6 @@ if ($post_title && $quiz) {
           $pilihan_jawaban .= '<div class="input-group-prepend"><div class="input-group-text">D</div></div>';
           $pilihan_jawaban .= '<input type="text" class="form-control" name="quiz[d][]" value="" required="">';
         $pilihan_jawaban .= '</div>';
-        echo $pilihan_jawaban;
         ?>
 
       <?php $jawaban = '<div class="form-group">';
@@ -125,9 +118,7 @@ if ($post_title && $quiz) {
             $jawaban .= '<option value="d">D</option>';
           $jawaban .= '</select>';
           $jawaban .= '</div>';
-        echo $jawaban;
         ?>
-    </div>
   </div>
   <h5 class="vd-field-title mt-3">Pilih Status</h5>
   <select class="form-select mb-4" name="status" required="">
@@ -142,7 +133,7 @@ if ($post_title && $quiz) {
 <?php echo wp_enqueue_editor(); ?>
 <?php echo wp_enqueue_media(); ?>
 
-<div id="jumlah-soal">1</div>
+<div id="jumlah-soal">0</div>
 
 <script>
 function hapus(id) {
@@ -159,22 +150,6 @@ function hapus(id) {
 
 
 jQuery(function($) {
-  $.each( $('#ask'), function( i, editor ) {
-    wp.editor.initialize(
-      'ask',
-      {
-        tinymce: {
-          wpautop: true,
-          plugins : 'charmap colorpicker compat3x directionality fullscreen hr image lists media paste tabfocus textcolor wordpress wpautoresize wpdialogs wpeditimage wpemoji wpgallery wplink wptextpattern wpview',
-          toolbar1: 'bold italic underline strikethrough | bullist numlist | blockquote hr wp_more | alignleft aligncenter alignright | link unlink | fullscreen | wp_adv',
-          toolbar2: 'formatselect alignjustify forecolor | pastetext removeformat charmap | outdent indent | undo redo | wp_help'
-        },
-        quicktags: true,
-        mediaButtons: true,
-      }
-    );
-  });
-
   var i = 1;  
   $("#tambah").click(function(){
     i++;

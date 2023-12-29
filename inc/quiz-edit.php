@@ -29,7 +29,7 @@ if (isset($_POST['quiz'])) {
   $quiz = $new_quiz_array;
 }
 
-if (isset($_POST['quiz']) && isset($_POST['post_title'])) {
+if (isset($_POST['post_title'])) {
     $actual_link    = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
     // Ambil data posting
     $post_data = array(
@@ -50,7 +50,8 @@ if (isset($_POST['quiz']) && isset($_POST['post_title'])) {
         // Perbarui atau tambahkan post meta
         update_post_meta($post_id,'waktu',$waktu);
         update_post_meta($post_id,'tampil_nilai',$tampil_nilai);
-        update_post_meta($post_id,'quiz',$quiz);
+        $editquiz = isset($_POST['quiz']) ? $_POST['quiz'] : '';
+        update_post_meta($post_id,'quiz',$editquiz);
         echo '<div class="alert alert-success">Quiz berhasil diperbarui.</div>';
         echo '<script>window.setTimeout(function(){
             window.location.href = "'.$actual_link.'";
@@ -98,9 +99,6 @@ if (isset($_POST['quiz']) && isset($_POST['post_title'])) {
       <small class="text-muted">Jika aktif, hasil nilai akan langsung keluar.</small>
       
     </div>
-
-
-    <h4 class="fs-5 fw-bold mt-4">Pertanyaan</h5>
 
 <?php $pilihan_jawaban = '<h5 class="vd-field-title">Pilihan Jawaban</h5>';
         $pilihan_jawaban .= '<div class="input-group mb-2">';
@@ -259,7 +257,7 @@ jQuery(function($) {
             $(".vdhapus").addClass("spinner-grow spinner-grow-sm me-2");
             $.ajax({  
                 type: "POST",  
-                data: "action=hapusquiz&id=" + <?php echo $post_id; ?>, 
+                data: "action=hapuspost&id=" + <?php echo $post_id; ?>, 
                 url: "<?php echo admin_url('admin-ajax.php');?>",
                 success:function(data) {
                     alert('Data berhasil dihapus.');

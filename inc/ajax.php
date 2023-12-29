@@ -70,8 +70,8 @@ function submitquiz_ajax() {
     wp_die();
 }
 
-add_action('wp_ajax_hapusquiz', 'hapusquiz_ajax');
-function hapusquiz_ajax() {
+add_action('wp_ajax_hapuspost', 'hapuspost_ajax');
+function hapuspost_ajax() {
     $id = isset($_POST['id'])?$_POST['id'] : '';
     if($id){
         $result = wp_delete_post($id,true);

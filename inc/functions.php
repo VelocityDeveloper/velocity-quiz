@@ -1,33 +1,45 @@
 <?php
 
-// add post type and taxnomomy
-add_action('init', 'velocity_quiz_init');
-function velocity_quiz_init() {
-    register_post_type('velocity-quiz', array(
-        'labels' => array(
-            'name' => 'Velocity Quiz',
-            'singular_name' => 'velocity-quiz',
-        ),
-        'menu_icon' => 'dashicons-media-text',
-        'public' => true,
-        'has_archive' => true,
-        'taxonomies' => array('quiz-category'),
-        'supports' => array(
-            'title',
-            'editor',
-        ),
-    ));
-	register_taxonomy(
-	'quiz-category',
-	'velocity-quiz',
-	array(
-		'label' => __( 'Quiz Categories' ),
+add_action('init', 'velocity_admin_init');
+function velocity_admin_init() {
+	$new_post_type = array(
+		array(
+			'slug' => 'velocity-quiz',
+			'name' => 'Velocity Quiz',
+			'menu_icon' => 'dashicons-media-text',
+		),
+		array(
+			'slug' => 'velocity-essay',
+			'name' => 'Velocity Essay',
+			'menu_icon' => 'dashicons-welcome-write-blog',
+		),
+	);
+	$post_type_list = array();
+	foreach ($new_post_type as $post_type) {
+		$args = array(
+			'labels' => array(
+				'name' => $post_type['name'],
+				'singular_name' => $post_type['slug'],
+			),
+			'menu_icon' => $post_type['menu_icon'],
+			'public' => true,
+			'has_archive' => true,
+			'taxonomies' => array('quiz-category'),
+			'supports' => array(
+				'title',
+				'editor',
+			),
+		);
+		register_post_type($post_type['slug'], $args);
+		$post_type_list[] = $post_type['slug'];
+	}
+	$tax_args = array(
+		'label' => 'Quiz Categories',
 		'hierarchical' => true,
 		'show_admin_column' => true,
-		//'show_in_rest' => true, // Use Gutenberg
-	));
+	);
+	register_taxonomy('quiz-category', $post_type_list, $tax_args);
 }
-
 
 
 // Add custome scripts and styles
@@ -107,3 +119,4 @@ function velocity_quiz() {
     return ob_get_clean();
 }
 add_shortcode ('velocity-quiz', 'velocity_quiz');
+
