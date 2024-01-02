@@ -109,7 +109,7 @@ function velocity_quiz() {
 	if(current_user_can('administrator')){
     	require_once(VELOCITY_QUIZ_DIR.'/inc/page-quiz.php');
 	} elseif(is_user_logged_in()){
-		require_once(VELOCITY_QUIZ_DIR.'/inc/user-quiz.php');
+		require_once(VELOCITY_QUIZ_DIR.'/inc/user-home.php');
 	} else {
 		$login_args = array(
 			'form_id' => 'velocity-login-form',

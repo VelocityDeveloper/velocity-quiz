@@ -1,26 +1,34 @@
 <?php global $wpdb;
-$table_quiz = $wpdb->prefix."velocity_quiz";
+$table_name = $wpdb->prefix."velocity_quiz";
 $user_id = get_current_user_id();
 $set = isset($_GET['set']) ? $_GET['set'] : '';
-$quiz_args = array(
+$post_args = array(
     'showposts' => -1,
     'post_type' => array('velocity-quiz'),
 ); 
-$sudahdikerjakan = $wpdb->get_results("SELECT * FROM $table_quiz WHERE user_id = $user_id");
+$sudahdikerjakan = $wpdb->get_results("SELECT * FROM $table_name WHERE user_id = $user_id");
 if($sudahdikerjakan && $set != 'sudah'){
-    foreach($sudahdikerjakan as $qp){
-        $idpost[] = $qp->post_id;
-    }
-    $quiz_args['post__not_in'] = $idpost;
+  foreach($sudahdikerjakan as $qp){
+    $idpost[] = $qp->post_id;
+  }
+  $post_args['post__not_in'] = $idpost;
+} elseif($sudahdikerjakan && $set == 'sudah') {
+  foreach($sudahdikerjakan as $qp){
+    $idpost[] = $qp->post_id;
+  }
+  $post_args['post__in'] = $idpost;
 }
-$quizposts = get_posts($quiz_args);
+$post_list = get_posts($post_args);
+
+if(empty($sudahdikerjakan) && $set == 'sudah') {
+  $post_list = '';
+}
 
 $classbelum = $set != 'sudah' ? ' active fw-bold' :'';
 $classsudah = $set == 'sudah' ? ' active fw-bold' :'';
-echo '<div class="container">';
   echo '<ul class="nav nav-tabs mb-3">';
-    echo '<li class="nav-item"><a class="nav-link'.$classbelum.'" href="?">Belum Dikerjakan</a></li>';
-    echo '<li class="nav-item"><a class="nav-link'.$classsudah.'" href="?set=sudah">Sudah Dikerjakan</a></li>';
+    echo '<li class="nav-item"><a class="nav-link'.$classbelum.'" href="?hal=quiz">Belum Dikerjakan</a></li>';
+    echo '<li class="nav-item"><a class="nav-link'.$classsudah.'" href="?hal=quiz&set=sudah">Sudah Dikerjakan</a></li>';
   echo '</ul>';
   echo '<div class="table-responsive">
   <table class="table table-bordered">
@@ -39,23 +47,23 @@ echo '<div class="container">';
     </tr>
   </thead>
   <tbody>';
-  if(empty($quizposts)){
+  if(empty($post_list)){
     echo '<tr>';
         echo '<td colspan="3"><small class="text-muted fst-italic text-center d-block">Tidak ada data ditemukan.</small></td>';
     echo '</tr>';
   } else {
-    foreach ($quizposts as $quizpost) {
-        $post_id = $quizpost->ID;
+    foreach ($post_list as $post) {
+        $post_id = $post->ID;
         $post_date = get_the_date('Y-m-d H:i', $post_id);
-        $sudahjawab = $wpdb->get_results("SELECT * FROM $table_quiz WHERE post_id = $post_id and user_id = $user_id");        
+        $sudahjawab = $wpdb->get_results("SELECT * FROM $table_name WHERE post_id = $post_id and user_id = $user_id");        
         if($sudahjawab){
-            $detailquiz = $sudahjawab[0]->detail;
-            $detail = json_decode($detailquiz);
+            $postdetail = $sudahjawab[0]->detail;
+            $detail = json_decode($postdetail);
             $post_date = $sudahjawab[0]->date;
         }
         echo '<tr class="quiz-'.$post_id.'">';
             echo '<td>'.$post_date.'</td>';
-            echo '<td>'.$quizpost->post_title.'</td>';
+            echo '<td>'.$post->post_title.'</td>';
             if($sudahjawab){
                 echo '<td class="text-success fw-bold">'.$detail->nilai.'</td>';
             }
@@ -69,5 +77,3 @@ echo '<div class="container">';
     }
   }
   echo '</tbody></table></div>';
-
-echo '</div>';

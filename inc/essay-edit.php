@@ -43,6 +43,10 @@ if (isset($_POST['post_title'])) {
 }
 ?>
 
+<div class="mb-3">
+    <a class="btn btn-primary btn-sm" href="?hal=essay&act=tambah">Tambah Baru +</a>
+</div>
+
 <form method="post" enctype="multipart/form-data">
   <div class="velocity-field">
 

@@ -13,18 +13,17 @@ if($halaman == 'essay'){
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-3">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#"><?php echo $title;?></a>
+    <div class="navbar-brand"><?php echo $title;?></div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarNavDarkDropdown" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">MENU</a>
-          <ul class="dropdown-menu dropdown-menu-primary" aria-labelledby="navbarDarkDropdownMenuLink">
-            <li><a class="dropdown-item" href="<?php get_the_permalink();?>?">Quiz</a></li>
-            <li><a class="dropdown-item" href="<?php get_the_permalink();?>?hal=essay">Essay</a></li>
-          </ul>
+        <li class="nav-item">
+          <a class="nav-link" href="<?php get_the_permalink();?>?">Quiz</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="<?php get_the_permalink();?>?hal=essay">Essay</a>
         </li>
       </ul>
     </div>
@@ -43,14 +42,14 @@ if($halaman == 'essay' && $act == 'tambah'){
   include(VELOCITY_QUIZ_DIR.'/inc/quiz-tambah.php');
 } else if($halaman == 'edit' && $id){
   include(VELOCITY_QUIZ_DIR.'/inc/quiz-edit.php');
-} else {
+} else if($halaman == 'quiz' || empty($halaman)){
   $quiz_args = array(
     'showposts' => -1,
     'post_type' => array('velocity-quiz'),
   ); 
   $quizposts = get_posts($quiz_args);
   echo '<div class="mb-3">';
-    echo '<a class="btn btn-primary btn-sm" href="?hal=tambah">Tambah +</a>';
+    echo '<a class="btn btn-primary btn-sm" href="?hal=tambah">Tambah Baru +</a>';
   echo '</div>';
   echo '<div class="table-responsive">
   <table class="table table-bordered">

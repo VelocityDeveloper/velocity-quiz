@@ -1,4 +1,3 @@
-
 <?php
 $post_id = isset($_GET['id']) ? $_GET['id'] : '';
 $post_title         = isset($_POST['post_title']) ? $_POST['post_title'] : get_the_title($post_id);
@@ -11,6 +10,11 @@ $status             = isset($_POST['status']) ? $_POST['status'] : get_post_stat
 $waktu              = isset($_POST['waktu']) ? $_POST['waktu'] : get_post_meta($post_id,'waktu',true);
 $tampil_nilai       = isset($_POST['tampil_nilai']) ? $_POST['tampil_nilai'] : get_post_meta($post_id,'tampil_nilai',true);
 
+
+// echo '<pre>'.print_r($quiz,1).'</pre>';
+
+$post_type = get_post_type($post_id);
+if ($post_type == 'velocity-quiz') {
 
 if (isset($_POST['quiz'])) {
   // Loop melalui sub-array 'tanya'
@@ -49,18 +53,22 @@ if (isset($_POST['post_title'])) {
     if ($result !== 0) {
         // Perbarui atau tambahkan post meta
         update_post_meta($post_id,'waktu',$waktu);
-        update_post_meta($post_id,'tampil_nilai',$tampil_nilai);
-        $editquiz = isset($_POST['quiz']) ? $_POST['quiz'] : '';
+        update_post_meta($post_id,'tampil_nilai',$tampil_nilai); 
+        $editquiz = isset($_POST['quiz']) ? $quiz : '';       
         update_post_meta($post_id,'quiz',$editquiz);
         echo '<div class="alert alert-success">Quiz berhasil diperbarui.</div>';
         echo '<script>window.setTimeout(function(){
             window.location.href = "'.$actual_link.'";
-        }, 1500);</script>';
+        }, 1000);</script>';
     } else {
         echo '<div class="alert alert-danger">Quiz gagal diperbarui.</div>';
     }
-}
-?>
+} ?>
+
+
+<div class="mb-3">
+    <a class="btn btn-primary btn-sm" href="?hal=tambah">Tambah Baru +</a>
+</div>
 
 <form method="post" enctype="multipart/form-data">
   <div class="velocity-field">
@@ -163,14 +171,8 @@ if($quiz) {
     $jumlah_quiz = count($quiz);
 } else { // jika quiz kosong 
     $no = 1;
-    $jumlah_quiz = 1; ?>
-    <div class="velocity-form-control">
-        <h5 class="vd-field-title mt-0">Soal</h5>
-        <textarea class="tanya-awal form-control" id="ask-<?php echo $no;?>" name="quiz[tanya][]"></textarea>
-        <?php echo $pilihan_jawaban; ?>
-        <?php echo $jawaban; ?>
-    </div>
-<?php } ?>
+    $jumlah_quiz = 1;
+} ?>
 
   </div>
   <h5 class="vd-field-title mt-3">Pilih Status</h5>
@@ -269,3 +271,5 @@ jQuery(function($) {
   
 });
 </script>
+
+<?php } ?>

@@ -7,7 +7,7 @@ $essay_args = array(
   ); 
   $essayposts = get_posts($essay_args);
   echo '<div class="mb-3">';
-    echo '<a class="btn btn-primary btn-sm" href="?hal=essay&act=tambah">Tambah +</a>';
+    echo '<a class="btn btn-primary btn-sm" href="?hal=essay&act=tambah">Tambah Baru +</a>';
   echo '</div>';
   echo '<div class="table-responsive">
   <table class="table table-bordered">

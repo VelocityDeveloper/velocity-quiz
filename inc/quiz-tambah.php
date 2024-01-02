@@ -43,9 +43,12 @@ if ($post_title) {
     update_post_meta($pid,'waktu',$waktu);
     update_post_meta($pid,'tampil_nilai',$tampil_nilai);
     if($quiz){
-      update_post_meta($pid,'quiz',$quiz);
+      update_post_meta($pid,'quiz',$quiz);      
     }
-    echo '<div class="alert alert-success">Quiz berhasil disimpan.</div>';
+    //echo '<div class="alert alert-success">Quiz berhasil disimpan.</div>';
+    echo '<script>window.setTimeout(function(){
+        window.location.href = "'.get_permalink().'?hal=edit&id='.$pid.'";
+    }, 10);</script>';
   } else {
     echo '<div class="alert alert-danger">Quiz gagal disimpan.</div>';
   }
