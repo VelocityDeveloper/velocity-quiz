@@ -1,6 +1,7 @@
 <?php get_header(); ?>
 
 <div class="container">
+
 <?php while (have_posts()) : the_post();
     global $wpdb;
     $table_name = $wpdb->prefix."velocity_quiz";
@@ -13,34 +14,34 @@
     $date = date( 'd-m-Y H:i:s', current_time( 'timestamp', 0 ) );
     $act = isset($_GET['act']) ? $_GET['act'] : '';
 
-    $infoquiz = '<h5 class="card-title border-bottom pb-3 text-center fw-bold">Detail</h5>';
-    $infoquiz .= '<table class="table"><tbody>';
-    $infoquiz .= '<tr>';
-        $infoquiz .= '<td class="fw-bold">Nama Quiz</td>';
-        $infoquiz .= '<td>:</td>';
-        $infoquiz .= '<td>'.get_the_title($post_id).'</td>';
-    $infoquiz .= '</tr>';
-    $infoquiz .= '<tr>';
-        $infoquiz .= '<td class="fw-bold">Waktu</td>';
-        $infoquiz .= '<td>:</td>';
-        $infoquiz .= '<td>'.$time.'</td>';
-    $infoquiz .= '</tr>';
-    $infoquiz .= '<tr>';
-        $infoquiz .= '<td class="fw-bold">Keterangan</td>';
-        $infoquiz .= '<td>:</td>';
-        $infoquiz .= '<td>';
-            $infoquiz .= get_the_content($post_id);
-        $infoquiz .= '</td>';
-    $infoquiz .= '</tr>';
-    $infoquiz .= '</tbody></table>';
+    $infoessay = '<h5 class="card-title border-bottom pb-3 text-center fw-bold">Detail</h5>';
+    $infoessay .= '<table class="table"><tbody>';
+    $infoessay .= '<tr>';
+        $infoessay .= '<td class="fw-bold">Nama Essay</td>';
+        $infoessay .= '<td>:</td>';
+        $infoessay .= '<td>'.get_the_title($post_id).'</td>';
+    $infoessay .= '</tr>';
+    $infoessay .= '<tr>';
+        $infoessay .= '<td class="fw-bold">Waktu</td>';
+        $infoessay .= '<td>:</td>';
+        $infoessay .= '<td>'.$time.'</td>';
+    $infoessay .= '</tr>';
+    $infoessay .= '<tr>';
+        $infoessay .= '<td class="fw-bold">Keterangan</td>';
+        $infoessay .= '<td>:</td>';
+        $infoessay .= '<td>';
+            $infoessay .= get_the_content($post_id);
+        $infoessay .= '</td>';
+    $infoessay .= '</tr>';
+    $infoessay .= '</tbody></table>';
 ?>
     <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>        
         <?php 
         if(!is_user_logged_in()){
             echo '<div class="alert alert-warning" role="alert">Silahkan masuk untuk melihat halaman ini.</div>';
         } elseif ($sudahjawab) {
-            $detailquiz = $sudahjawab[0]->vq_detail;
-            $detail = json_decode($detailquiz);
+            $detailessay = $sudahjawab[0]->vq_detail;
+            $detail = json_decode($detailessay);
             $hasil_nilai = $detail->nilai;
             $jml_benar = $detail->benar;
             $jml_salah = $detail->salah;
@@ -58,10 +59,10 @@
             echo '</div>';
 
             echo '<div class="card mx-auto w-100 p-3" style="max-width: 500px;">';
-                echo $infoquiz;
+                echo $infoessay;
             echo '</div>';
-        } elseif ($act == 'kerjakan' || isset($_SESSION['kerjaquiz'])) { ?>
-        <div class="quiz-content">
+        } elseif ($act == 'kerjakan' || isset($_SESSION['kerjaessay'])) { ?>
+        <div class="essay-content">
 
             <p id="countdown9"></p>
             <p id="countdown8" class="text-center mb-4"></p>
@@ -72,52 +73,42 @@
                     <?php the_title(); ?>
                 </div>
                 <div class="card-body">
-                    <?php $quiz = get_post_meta($post_id,'quiz',true);
+                    <?php
+                    $essay = get_post_meta($post_id,'essay',true);
+                    // echo '<pre>'.print_r($essay,1).'</pre>'; 
                     $i = 1;
-                    $jml_quiz = count($quiz);
-                    foreach ($quiz as $data) {
+                    $jml_essay = count($essay);
+                    foreach ($essay as $data) {
                         $no = $i++;
                         $show = $no == '1'? 'show ' :'';
                         echo '<div id="coll-'.$no.'" class="'.$show.'collapse kolomsoal">';
                             echo '<div class="fs-5 fw-bold mb-3">Soal '.$no.'</div>';
                             echo '<div class="card p-3 border border-success mb-4">
-                                <div class="card-soal">'.$data['tanya'].'</div>
+                                <div class="card-soal">'.$data.'</div>
                             </div>';
                             echo '<div class="pilihan-jawaban">';
-                            $pilihan_jawaban = array('a','b','c','d');
-                            foreach ($pilihan_jawaban as $abjab) {
-                                echo '<div class="d-block">';
-                                    echo '<input class="d-none soalradio" type="radio" data-id="'.$no.'" id="soal-'.$no.$abjab.'" name="jawaban['.$no.']" value="'.$abjab.'" required>';
-                                    echo '<label class="w-100 p-0 soalradiolabel" for="soal-'.$no.$abjab.'">';
-                                        echo '<div class="input-group mb-2">';
-                                            echo '<div class="input-group-prepend text-uppercase">';
-                                                echo '<div class="input-group-text radio-elv rounded-start rounded-0">'.$abjab.'</div>';
-                                            echo '</div>';
-                                            echo '<div class="form-control radio-elv">'.$data[$abjab].'</div>';
-                                        echo '</div>';
-                                    echo '</label>';
-                                echo '</div>';
-                            }
+                                echo '<div class="mb-1 text-muted">Jawaban Anda:</div>';
+                                echo '<textarea class="form-control jawaban" name="jawaban[]" data-id="'.$no.'" id="soal-'.$no.'" rows="3" required></textarea>';
                             echo '</div>';
                             if ($no > 1) {
                               $urutbefore = $no - 1;
                               echo '<a class="my-3 mr-3 btn btn-dark linksoal text-white me-2" id="'.$urutbefore.'"><i class="fa fa-caret-left"></i> Sebelumnya</a>';
                             }
-                            if ($no < $jml_quiz) {
+                            if ($no < $jml_essay) {
                               $urutnext = $no + 1;
                               echo '<a class="my-3 btn btn-dark linksoal text-white" id="'.$urutnext.'">Selanjutnya <i class="fa fa-caret-right"></i></a>';
                             }
                         echo '</div>';
                     } 
                     echo '<small class="fst-italic text-muted">Ket: Isikan semua jawaban sebelum submit</small>';
-                    echo '<ul class="pagination mt-4 quiz-pagination">';
-                    for ($x = 1; $x <= count($quiz); $x++) {
+                    echo '<ul class="pagination mt-4 essay-pagination">';
+                    for ($x = 1; $x <= count($essay); $x++) {
                         echo '<li class="page-item"><a class="page-link linksoal link'.$x.'" id="'.$x.'" href="#">'.$x.'</a></li>';
                     }
                     echo '</ul>';
                     ?>
                 </div>
-                <div class="card-footer text-muted footer-quiz d-none">
+                <div class="card-footer text-muted footer-essay d-none">
                     <button type="submit" class="btn btn-primary w-100"><span class="load"></span>SELESAI</button>
                 </div>
             </div>
@@ -125,13 +116,13 @@
 
     <?php
     //set waktu
-    if (empty($_SESSION['kerjaquiz']['setwaktuawal'])) {
-        $_SESSION['kerjaquiz']['setwaktuawal'] = $date;
+    if (empty($_SESSION['kerjaessay']['setwaktuawal'])) {
+        $_SESSION['kerjaessay']['setwaktuawal'] = $date;
         $endTime = strtotime("+".$waktu." minutes", strtotime($date));
         $expTime = date('Y/m/d H:i:s', $endTime);
     } else {
         $to_time    = strtotime($date);
-        $from_time  = strtotime($_SESSION['kerjaquiz']['setwaktuawal']);
+        $from_time  = strtotime($_SESSION['kerjaessay']['setwaktuawal']);
         $bettime    = $to_time - $from_time;
         $newmin     = $waktu?$waktu*60:0;
         $newminute  = ceil($newmin-$bettime);
@@ -140,9 +131,9 @@
     } ?>
 
     <?php 
-    //$_SESSION['kerjaquiz']['setwaktuawal'] = $date;
-    // echo '<pre>'.print_r($_SESSION['kerjaquiz'],1).'</pre>';
-    // unset($_SESSION['kerjaquiz']);
+    //$_SESSION['kerjaessay']['setwaktuawal'] = $date;
+    // echo '<pre>'.print_r($_SESSION['kerjaessay'],1).'</pre>';
+    // unset($_SESSION['kerjaessay']);
     ?>
 
     <script>
@@ -152,24 +143,31 @@
             $(".kolomsoal").removeClass("show");
             $("#coll-" + get_id).toggleClass("show");
         });
-        $(document).on("click",".soalradio",function(e){
+
+        $(".jawaban").on("input", function() {
             var get_id = $(this).attr("data-id");
-            var value  = $(this).attr("value");
-            $(".link" + get_id).addClass("bg-success text-white");
-            var totalPilihan = $('.soalradio:checked').length;
-            if(totalPilihan == '<?php echo $jml_quiz; ?>'){
-                $('.footer-quiz').removeClass('d-none');                
+            var value = $(this).val();
+            if(value) {
+                $(".link" + get_id).addClass("bg-success text-white");
+            } else {
+                $(".link" + get_id).removeClass("bg-success text-white");
+            }
+            var totaljawaban = $(".jawaban").filter(function() {
+                return $(this).val().trim() !== "";
+            }).length;
+            if(totaljawaban == '<?php echo $jml_essay; ?>'){
+                $('.footer-essay').removeClass('d-none');                
             }
         });
-        function inputhasilquiz() {
+        function inputhasilessay() {
             var datas = $('.form-jawab').serialize();
             $(".load").html('<span class="spinner-grow spinner-grow-sm me-2"></span>');
             $.ajax({
                 type: "POST",
-                data: "action=submitquiz&"+datas,
+                data: "action=submitessay&"+datas,
                 url: "<?php echo admin_url('admin-ajax.php'); ?>",
                 success:function(data) {
-                    $(".quiz-content").html(data);
+                    $(".essay-content").html(data);
                     $(".load").html('');
                 },
                 error: function (xhr, textStatus, errorThrown) {
@@ -178,7 +176,7 @@
             });
         }
         $('.form-jawab').on('submit', function (e) {
-            inputhasilquiz();
+            inputhasilessay();
             e.preventDefault();
         });
         <?php if($waktu && !current_user_can('administrator')) { ?>
@@ -195,7 +193,7 @@
             })
             .on('finish.countdown', function(e) {
                 $("#countdown9").html('<div class="mb-4"><div class="alert alert-danger mx-auto">Waktu Habis</div></div>');
-                inputhasilquiz();
+                inputhasilessay();
                 e.preventDefault();
             });
         <?php } ?>
@@ -204,14 +202,13 @@
 
         </div>        
         <?php 
-        } elseif (empty($_SESSION['kerjaquiz']) && !current_user_can('administrator')) {
+        } elseif (empty($_SESSION['kerjaessay']) && !current_user_can('administrator')) {
             echo '<div class="card mx-auto w-100 p-3" style="max-width: 500px;">';
-                echo $infoquiz;
+                echo $infoessay;
                 echo '<a class="btn btn-success" href="?act=kerjakan">Kerjakan</a>';
             echo '</div>';
-         } ?>
+        } ?>
     </article>
-
 <?php endwhile; ?>
 </div>
 

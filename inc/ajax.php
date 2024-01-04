@@ -24,8 +24,6 @@ function submitquiz_ajax() {
     }
     $jml_benar = array_sum($benar);
     $jml_salah = array_sum($salah);
-    //echo '<pre>'.print_r($quiz,1).'</pre>'; 
-    //echo '<pre>'.print_r($_POST,1).'</pre>'; 
     $jumlahsoal = $jml_benar + $jml_salah;
     if($jml_benar || $jml_salah){
         $nilaix = 100 / $jumlahsoal * $jml_benar;
@@ -38,11 +36,11 @@ function submitquiz_ajax() {
     );
     if(!current_user_can('administrator')) {
         $wpdb->insert($table_name, array(
-            'date' => $date,
-            'type' => 'quiz',
+            'vq_date' => $date,
+            'vq_type' => 'quiz',
             'user_id' => get_current_user_id(),
             'post_id' => $post_id,
-            'detail'  => json_encode($array_jawaban),
+            'vq_detail'  => json_encode($array_jawaban),
         ));
     }
     echo '<div class="card mx-auto w-100" style="max-width: 500px;">';
@@ -65,10 +63,52 @@ function submitquiz_ajax() {
                 echo 'Terima kasih, ujian anda telah selesai. klik tombol selesai untuk kembali';
             echo '</div>';
 		}
+        echo '<div class="card-footer">';
+            echo '<a class="btn btn-primary w-100" href="'.get_the_permalink($post_id).'">SELESAI</a>';
+        echo '</div>';
     echo '</div>';
     unset($_SESSION['kerjaquiz']);
     wp_die();
 }
+
+
+add_action( 'wp_ajax_nopriv_submitessay', 'submitessay_ajax' );
+add_action('wp_ajax_submitessay', 'submitessay_ajax');
+function submitessay_ajax() {
+    global $wpdb;
+    $table_name = $wpdb->prefix . "velocity_quiz";
+    $date = date( 'Y/m/d H:i:s', current_time( 'timestamp', 0 ) );
+    $post_id = isset($_POST['post_id'])?$_POST['post_id'] : '';
+    $jawaban = isset($_POST['jawaban'])?$_POST['jawaban'] : '';
+    $essay = get_post_meta($post_id,'essay',true);
+    /*
+    if(!current_user_can('administrator')) {
+        $wpdb->insert($table_name, array(
+            'vq_date' => $date,
+            'vq_type' => 'essay',
+            'user_id' => get_current_user_id(),
+            'post_id' => $post_id,
+            'vq_detail'  => json_encode($jawaban),
+        ));
+    }
+    */
+    echo '<pre>'.print_r($_POST,1).'</pre>';
+    echo '<pre>'.print_r($jawaban,1).'</pre>';
+    echo '<div class="card mx-auto w-100" style="max-width: 500px;">';
+        echo '<div class="card-hasil-nilai card-body text-center bg-nilai">';
+			echo '<h3 class="card-text h2 text-white">Essay telah selesai</h3>';
+        echo '</div>';
+		echo '<div class="card-body text-center">';
+            echo 'Terima kasih, ujian anda telah selesai. klik tombol selesai untuk kembali';
+        echo '</div>';
+        echo '<div class="card-footer">';
+            echo '<a class="btn btn-primary w-100" href="'.get_the_permalink($post_id).'">SELESAI</a>';
+        echo '</div>';
+    echo '</div>';
+    unset($_SESSION['kerjaessay']);
+    wp_die();
+}
+
 
 add_action('wp_ajax_hapuspost', 'hapuspost_ajax');
 function hapuspost_ajax() {

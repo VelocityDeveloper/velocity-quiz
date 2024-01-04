@@ -35,9 +35,9 @@ if($halaman == 'essay'){
 
 <?php
 if($halaman == 'quiz'){
-    require_once(VELOCITY_QUIZ_DIR.'/inc/user-quiz.php');
+    echo velocity_quiz_user('quiz');
 } else if($halaman == 'essay'){
-    require_once(VELOCITY_QUIZ_DIR.'/inc/user-essay.php');
+    echo velocity_quiz_user('essay');
 } else {
     echo 'hello';
 }

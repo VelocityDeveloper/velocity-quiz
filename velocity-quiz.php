@@ -48,6 +48,7 @@ if (!defined('VELOCITY_QUIZ_DIR_URI'))	define('VELOCITY_QUIZ_DIR_URI', plugin_di
 /// Load everything
 $includes = [
 	'inc/functions.php',			// fungsi
+	'inc/user-functions.php',		// fungsi utk user
 	'inc/ajax.php',			// ajax
 ];
 foreach ($includes as $include) {

@@ -28,13 +28,13 @@ class Velocity_Quiz_Activator {
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
         $sql_quiz = "CREATE TABLE IF NOT EXISTS $table_quiz (
-                id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-                type varchar(20) NOT NULL,
-                date datetime NOT NULL,
-                user_id bigint(20) NOT NULL,
-                post_id bigint(20) NOT NULL,
-                detail text NOT NULL,
-                PRIMARY KEY (id)
+            vq_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+            vq_type varchar(20) NOT NULL,
+            vq_date datetime NOT NULL,
+            user_id bigint(20) NOT NULL,
+            post_id bigint(20) NOT NULL,
+            vq_detail text NOT NULL,
+            PRIMARY KEY (vq_id)
         );";
         dbDelta($sql_quiz);
     }

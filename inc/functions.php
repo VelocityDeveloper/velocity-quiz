@@ -95,8 +95,10 @@ add_action('delete_post', 'velocity_quiz_on_delete_post');
 // mengatur template default single quiz
 function velocity_quiz_single($single_template) {
     global $post;
-    if ($post->post_type == 'velocity-quiz') {
+    if($post->post_type == 'velocity-quiz') {
         $single_template = VELOCITY_QUIZ_DIR.'inc/quiz-tampil.php';
+    } else if($post->post_type == 'velocity-essay') {
+        $single_template = VELOCITY_QUIZ_DIR.'inc/essay-tampil.php';
     }
     return $single_template;
 }
