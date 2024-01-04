@@ -32,7 +32,6 @@ function submitquiz_ajax() {
     $array_jawaban = array(
         'benar' => $jml_benar,
         'salah' => $jml_salah,
-        'nilai' => $nilai,
     );
     if(!current_user_can('administrator')) {
         $wpdb->insert($table_name, array(
@@ -41,6 +40,7 @@ function submitquiz_ajax() {
             'user_id' => get_current_user_id(),
             'post_id' => $post_id,
             'vq_detail'  => json_encode($array_jawaban),
+            'nilai'  => $nilai,
         ));
     }
     echo '<div class="card mx-auto w-100" style="max-width: 500px;">';
@@ -81,7 +81,6 @@ function submitessay_ajax() {
     $post_id = isset($_POST['post_id'])?$_POST['post_id'] : '';
     $jawaban = isset($_POST['jawaban'])?$_POST['jawaban'] : '';
     $essay = get_post_meta($post_id,'essay',true);
-    /*
     if(!current_user_can('administrator')) {
         $wpdb->insert($table_name, array(
             'vq_date' => $date,
@@ -89,17 +88,17 @@ function submitessay_ajax() {
             'user_id' => get_current_user_id(),
             'post_id' => $post_id,
             'vq_detail'  => json_encode($jawaban),
+            'vq_result'  => 'pending',
         ));
     }
-    */
-    echo '<pre>'.print_r($_POST,1).'</pre>';
-    echo '<pre>'.print_r($jawaban,1).'</pre>';
+    // echo '<pre>'.print_r($_POST,1).'</pre>';
+    // echo '<pre>'.print_r($jawaban,1).'</pre>';
     echo '<div class="card mx-auto w-100" style="max-width: 500px;">';
         echo '<div class="card-hasil-nilai card-body text-center bg-nilai">';
 			echo '<h3 class="card-text h2 text-white">Essay telah selesai</h3>';
         echo '</div>';
 		echo '<div class="card-body text-center">';
-            echo 'Terima kasih, ujian anda telah selesai. klik tombol selesai untuk kembali';
+            echo 'Terima kasih, ujian anda telah selesai.<br/>Klik tombol selesai untuk kembali';
         echo '</div>';
         echo '<div class="card-footer">';
             echo '<a class="btn btn-primary w-100" href="'.get_the_permalink($post_id).'">SELESAI</a>';

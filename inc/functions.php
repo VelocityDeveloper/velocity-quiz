@@ -25,6 +25,10 @@ function velocity_admin_init() {
 			'public' => true,
 			'has_archive' => true,
 			'taxonomies' => array('quiz-category'),
+			'rewrite' => array(
+				'with_front' => true,
+				'slug' => $post_type['slug'],
+			),
 			'supports' => array(
 				'title',
 				'editor',
