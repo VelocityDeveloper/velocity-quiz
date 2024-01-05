@@ -35,7 +35,7 @@ class Velocity_Quiz_Activator {
             post_id bigint(20) NOT NULL,
             vq_detail text NOT NULL,
             vq_result text,
-            nilai bigint(20),
+            nilai varchar(10),
             PRIMARY KEY (vq_id)
         );";
         dbDelta($sql_quiz);

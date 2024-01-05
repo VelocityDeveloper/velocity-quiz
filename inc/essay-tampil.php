@@ -42,21 +42,24 @@
         } elseif ($sudahjawab) {
             $detailessay = $sudahjawab[0]->vq_detail;
             $detail = json_decode($detailessay);
-            $hasil_nilai = $detail->nilai;
-            $jml_benar = $detail->benar;
-            $jml_salah = $detail->salah;
-            $jumlahsoal = $jml_benar + $jml_salah;         
-            echo '<div class="card mx-auto w-100 mb-3" style="max-width: 500px;">';
-                echo '<div class="card-hasil-nilai card-body text-center bg-nilai">';
-                    echo '<h3 class="card-title">Nilai anda:</h3>';
-                    echo '<p class="card-text h1 fs-1">'.$hasil_nilai.'</p>';
+            $hasil_nilai = $sudahjawab[0]->nilai;        
+            if($hasil_nilai){
+                echo '<div class="card mx-auto w-100 mb-3" style="max-width: 500px;">';
+                    echo '<div class="card-hasil-nilai card-body text-center bg-nilai">';
+                        echo '<h3 class="card-title">Nilai anda:</h3>';
+                        echo '<p class="card-text h1 fs-1">'.$hasil_nilai.'</p>';
+                    echo '</div>';
+                    //echo '<ul class="list-group list-group-flush">';
+                        //echo '<li class="list-group-item"><i class="fa fa-check text-success"></i> Benar = '.$jml_benar.'</li>';
+                        //echo '<li class="list-group-item"><i class="fa fa-close text-danger"></i> Salah = '.$jml_salah.'</li>';
+                        //echo '<li class="list-group-item"><i class="fa fa-wpforms"></i> Jumlah Soal = '.$jumlahsoal.'</li>';
+                    //echo '</ul>';
                 echo '</div>';
-                echo '<ul class="list-group list-group-flush">';
-                    echo '<li class="list-group-item"><i class="fa fa-check text-success"></i> Benar = '.$jml_benar.'</li>';
-                    echo '<li class="list-group-item"><i class="fa fa-close text-danger"></i> Salah = '.$jml_salah.'</li>';
-                    echo '<li class="list-group-item"><i class="fa fa-wpforms"></i> Jumlah Soal = '.$jumlahsoal.'</li>';
-                echo '</ul>';
-            echo '</div>';
+            } else {
+                echo '<div class="alert alert-info card mx-auto w-100 mb-3" style="max-width: 500px;">';
+                    echo 'Hasil nilai masih menunggu pengecekan admin.';
+                echo '</div>';
+            }
 
             echo '<div class="card mx-auto w-100 p-3" style="max-width: 500px;">';
                 echo $infoessay;
@@ -202,7 +205,7 @@
 
         </div>        
         <?php 
-        } elseif (empty($_SESSION['kerjaessay']) && !current_user_can('administrator')) {
+        } elseif (empty($_SESSION['kerjaessay'])) {
             echo '<div class="card mx-auto w-100 p-3" style="max-width: 500px;">';
                 echo $infoessay;
                 echo '<a class="btn btn-success" href="?act=kerjakan">Kerjakan</a>';

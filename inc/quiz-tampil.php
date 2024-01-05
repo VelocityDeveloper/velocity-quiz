@@ -34,14 +34,14 @@
     $infoquiz .= '</tr>';
     $infoquiz .= '</tbody></table>';
 ?>
-    <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>        
+    <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>> 
         <?php 
         if(!is_user_logged_in()){
             echo '<div class="alert alert-warning" role="alert">Silahkan masuk untuk melihat halaman ini.</div>';
         } elseif ($sudahjawab) {
             $detailquiz = $sudahjawab[0]->vq_detail;
             $detail = json_decode($detailquiz);
-            $hasil_nilai = $detail->nilai;
+            $hasil_nilai = $sudahjawab[0]->nilai;
             $jml_benar = $detail->benar;
             $jml_salah = $detail->salah;
             $jumlahsoal = $jml_benar + $jml_salah;         
@@ -204,7 +204,7 @@
 
         </div>        
         <?php 
-        } elseif (empty($_SESSION['kerjaquiz']) && !current_user_can('administrator')) {
+        } elseif (empty($_SESSION['kerjaquiz'])) {
             echo '<div class="card mx-auto w-100 p-3" style="max-width: 500px;">';
                 echo $infoquiz;
                 echo '<a class="btn btn-success" href="?act=kerjakan">Kerjakan</a>';

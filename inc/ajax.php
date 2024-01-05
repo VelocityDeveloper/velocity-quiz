@@ -95,7 +95,7 @@ function submitessay_ajax() {
     // echo '<pre>'.print_r($jawaban,1).'</pre>';
     echo '<div class="card mx-auto w-100" style="max-width: 500px;">';
         echo '<div class="card-hasil-nilai card-body text-center bg-nilai">';
-			echo '<h3 class="card-text h2 text-white">Essay telah selesai</h3>';
+			echo '<h3 class="card-text h2 text-white">Ujian Selesai</h3>';
         echo '</div>';
 		echo '<div class="card-body text-center">';
             echo 'Terima kasih, ujian anda telah selesai.<br/>Klik tombol selesai untuk kembali';
@@ -105,6 +105,35 @@ function submitessay_ajax() {
         echo '</div>';
     echo '</div>';
     unset($_SESSION['kerjaessay']);
+    wp_die();
+}
+
+
+add_action('wp_ajax_nilaiessay', 'nilaiessay_ajax');
+function nilaiessay_ajax() {
+    global $wpdb;
+    $table_name = $wpdb->prefix . "velocity_quiz";
+    $id = isset($_POST['id'])?$_POST['id'] : '';
+    $hasil = isset($_POST['hasil'])?$_POST['hasil'] : '';
+    //echo '<pre class="text-start">'.print_r($_POST,1).'</pre>';
+
+	//create array hasil
+	$nilaihit = [];
+	foreach ($hasil as $key => $value) {
+		$nilaihit[] = $value;
+	}
+	$jikabenar	= count($hasil)*5;
+	$nilaiakhir	= round((array_sum($nilaihit)/$jikabenar)*100,1);
+
+    if($id){
+        $wpdb->update( $table_name,
+            array(
+                'vq_result' => json_encode($hasil),
+                'nilai' => $nilaiakhir,
+            ),
+        array('vq_id'=> $id));
+        echo '<span class="text-success fw-bold">'.$nilaiakhir.'</span>';
+    }
     wp_die();
 }
 

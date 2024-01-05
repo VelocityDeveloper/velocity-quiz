@@ -34,12 +34,10 @@ if($halaman == 'essay'){
 
 
 <?php
-if($halaman == 'quiz'){
+if($halaman == 'quiz' || empty($halaman)){
     echo velocity_quiz_user('quiz');
 } else if($halaman == 'essay'){
     echo velocity_quiz_user('essay');
-} else {
-    echo 'hello';
 }
 ?>
 

@@ -25,10 +25,6 @@ function velocity_admin_init() {
 			'public' => true,
 			'has_archive' => true,
 			'taxonomies' => array('quiz-category'),
-			'rewrite' => array(
-				'with_front' => true,
-				'slug' => $post_type['slug'],
-			),
 			'supports' => array(
 				'title',
 				'editor',
@@ -126,3 +122,14 @@ function velocity_quiz() {
 }
 add_shortcode ('velocity-quiz', 'velocity_quiz');
 
+function add_filter_sedih(){
+	echo 'add_filter_sedih';
+}
+function add_action_sedih(){
+	echo 'add_action_sedih';
+}
+apply_filters( 'login_form_bottom', 'apply_filters sedih');
+apply_filters( 'login_form_middle', 'apply_filters login_form_middle sedih');
+apply_filters( 'login_form_top', 'apply_filters login_form_top sedih');
+add_filter( 'login_form_bottom', 'add_filter_sedih', 10, 3);
+add_action( 'login_form_bottom', 'add_action_sedih');
