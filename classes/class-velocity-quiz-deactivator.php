@@ -24,7 +24,7 @@ class Velocity_Quiz_Deactivator {
 	 * @since    1.0.0
 	 */
 	public static function deactivate() {
-
+		delete_option('vq_activated');
 	}
 
 }

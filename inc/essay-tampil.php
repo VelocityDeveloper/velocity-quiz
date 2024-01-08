@@ -49,11 +49,6 @@
                         echo '<h3 class="card-title">Nilai anda:</h3>';
                         echo '<p class="card-text h1 fs-1">'.$hasil_nilai.'</p>';
                     echo '</div>';
-                    //echo '<ul class="list-group list-group-flush">';
-                        //echo '<li class="list-group-item"><i class="fa fa-check text-success"></i> Benar = '.$jml_benar.'</li>';
-                        //echo '<li class="list-group-item"><i class="fa fa-close text-danger"></i> Salah = '.$jml_salah.'</li>';
-                        //echo '<li class="list-group-item"><i class="fa fa-wpforms"></i> Jumlah Soal = '.$jumlahsoal.'</li>';
-                    //echo '</ul>';
                 echo '</div>';
             } else {
                 echo '<div class="alert alert-info card mx-auto w-100 mb-3" style="max-width: 500px;">';

@@ -35,7 +35,7 @@ function velocity_quiz_user($type = 'quiz') {
         $html .= '<li class="nav-item"><a class="nav-link'.$classsudah.'" href="?hal='.$type.'&set=sudah">Sudah Dikerjakan</a></li>';
     $html .= '</ul>';
     $html .= '<div class="table-responsive">
-    <table class="table table-bordered">
+    <table class="table">
         <thead>
         <tr>';
         if($set == 'sudah'){

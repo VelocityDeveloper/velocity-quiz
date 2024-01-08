@@ -25,7 +25,7 @@ if ($post_title) {
     } if($essay){
         update_post_meta($pid,'essay',$essay);
     }
-    //echo '<div class="alert alert-success">Essay berhasil disimpan.</div>';
+    echo '<div class="alert alert-success">Essay berhasil disimpan.</div>';
     echo '<script>window.setTimeout(function(){
         window.location.href = "'.get_permalink().'?hal=essay&act=edit&id='.$pid.'";
     }, 10);</script>';

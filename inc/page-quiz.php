@@ -54,7 +54,7 @@ if($halaman == 'essay' && $act == 'tambah'){
     echo '<a class="btn btn-primary btn-sm" href="?hal=tambah">Tambah Baru +</a>';
   echo '</div>';
   echo '<div class="table-responsive">
-  <table class="table table-bordered">
+  <table class="table">
      <thead>
     <tr>
       <th scope="col">Tanggal</th>

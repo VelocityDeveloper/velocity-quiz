@@ -45,7 +45,7 @@ if ($post_title) {
     if($quiz){
       update_post_meta($pid,'quiz',$quiz);      
     }
-    //echo '<div class="alert alert-success">Quiz berhasil disimpan.</div>';
+    echo '<div class="alert alert-success">Quiz berhasil disimpan.</div>';
     echo '<script>window.setTimeout(function(){
         window.location.href = "'.get_permalink().'?hal=edit&id='.$pid.'";
     }, 10);</script>';

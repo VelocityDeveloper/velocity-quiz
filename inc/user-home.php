@@ -3,10 +3,8 @@ $current_user = wp_get_current_user();
 $halaman = isset($_GET['hal']) ? $_GET['hal'] : '';
 if($halaman == 'essay'){
     $title = 'Essay';
-} elseif($halaman == 'quiz') {
-    $title = 'Quiz';
 } else {
-    $title = '@'.$current_user->user_login;
+    $title = 'Quiz';
 } ?>
 
 <div class="container">
@@ -18,9 +16,6 @@ if($halaman == 'essay'){
     </button>
     <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="?">Home</a>
-        </li>
         <li class="nav-item">
           <a class="nav-link" href="<?php get_the_permalink();?>?hal=quiz">Quiz</a>
         </li>

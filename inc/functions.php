@@ -2,6 +2,7 @@
 
 add_action('init', 'velocity_admin_init');
 function velocity_admin_init() {
+    global $wp_rewrite;
 	$new_post_type = array(
 		array(
 			'slug' => 'velocity-quiz',
@@ -16,22 +17,24 @@ function velocity_admin_init() {
 	);
 	$post_type_list = array();
 	foreach ($new_post_type as $post_type) {
+		$pt_slug = $post_type['slug'];
 		$args = array(
 			'labels' => array(
 				'name' => $post_type['name'],
-				'singular_name' => $post_type['slug'],
+				'singular_name' => $pt_slug,
 			),
 			'menu_icon' => $post_type['menu_icon'],
 			'public' => true,
 			'has_archive' => true,
 			'taxonomies' => array('quiz-category'),
+			'rewrite' => array('slug' => $pt_slug, 'with_front' => false),
 			'supports' => array(
 				'title',
 				'editor',
 			),
 		);
-		register_post_type($post_type['slug'], $args);
-		$post_type_list[] = $post_type['slug'];
+		register_post_type($pt_slug, $args);
+		$post_type_list[] = $pt_slug;
 	}
 	$tax_args = array(
 		'label' => 'Quiz Categories',
@@ -39,6 +42,15 @@ function velocity_admin_init() {
 		'show_admin_column' => true,
 	);
 	register_taxonomy('quiz-category', $post_type_list, $tax_args);
+
+	// mengatur ulang permalink wordpress
+    if (!get_option('vq_activated')) {
+        global $wp_rewrite;
+        $structure = get_option('permalink_structure');
+        $wp_rewrite->set_permalink_structure($structure);
+        $wp_rewrite->flush_rules();
+        update_option('vq_activated', true);
+    }
 }
 
 
@@ -121,15 +133,3 @@ function velocity_quiz() {
     return ob_get_clean();
 }
 add_shortcode ('velocity-quiz', 'velocity_quiz');
-
-function add_filter_sedih(){
-	echo 'add_filter_sedih';
-}
-function add_action_sedih(){
-	echo 'add_action_sedih';
-}
-apply_filters( 'login_form_bottom', 'apply_filters sedih');
-apply_filters( 'login_form_middle', 'apply_filters login_form_middle sedih');
-apply_filters( 'login_form_top', 'apply_filters login_form_top sedih');
-add_filter( 'login_form_bottom', 'add_filter_sedih', 10, 3);
-add_action( 'login_form_bottom', 'add_action_sedih');

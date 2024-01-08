@@ -15,7 +15,7 @@ echo '<div class="row mb-3">';
 echo '</div>';
 
 echo '<div class="table-responsive">
-  <table class="table table-bordered">
+  <table class="table">
      <thead>
     <tr>
       <th scope="col">No</th>
