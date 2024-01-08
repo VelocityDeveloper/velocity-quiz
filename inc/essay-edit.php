@@ -43,8 +43,13 @@ if (isset($_POST['post_title'])) {
 }
 ?>
 
-<div class="mb-3">
-    <a class="btn btn-primary btn-sm" href="?hal=essay&act=tambah">Tambah Baru +</a>
+<div class="row mb-3">
+  <div class="col-6 pe-0">
+      <a class="btn btn-primary btn-sm" href="?hal=essay&act=tambah">Tambah Baru +</a>
+  </div>
+  <div class="col-6 ps-0 text-end">
+      <a class="btn btn-info btn-sm" href="<?php echo get_the_permalink($post_id);?>" target="_blank">Lihat Essay</a>
+  </div>
 </div>
 
 <form method="post" enctype="multipart/form-data">
