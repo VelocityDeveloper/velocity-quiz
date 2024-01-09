@@ -81,7 +81,7 @@
                         echo '<div id="coll-'.$no.'" class="'.$show.'collapse kolomsoal">';
                             echo '<div class="fs-5 fw-bold mb-3">Soal '.$no.'</div>';
                             echo '<div class="card p-3 border border-success mb-4">
-                                <div class="card-soal">'.$data['tanya'].'</div>
+                                <div class="card-soal">'.do_shortcode($data['tanya']).'</div>
                             </div>';
                             echo '<div class="pilihan-jawaban">';
                             $pilihan_jawaban = array('a','b','c','d');

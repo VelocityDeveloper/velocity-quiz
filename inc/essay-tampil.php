@@ -82,7 +82,7 @@
                         echo '<div id="coll-'.$no.'" class="'.$show.'collapse kolomsoal">';
                             echo '<div class="fs-5 fw-bold mb-3">Soal '.$no.'</div>';
                             echo '<div class="card p-3 border border-success mb-4">
-                                <div class="card-soal">'.$data.'</div>
+                                <div class="card-soal">'.do_shortcode($data).'</div>
                             </div>';
                             echo '<div class="pilihan-jawaban">';
                                 echo '<div class="mb-1 text-muted">Jawaban Anda:</div>';

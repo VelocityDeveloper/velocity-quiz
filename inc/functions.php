@@ -133,3 +133,22 @@ function velocity_quiz() {
     return ob_get_clean();
 }
 add_shortcode ('velocity-quiz', 'velocity_quiz');
+
+
+
+add_shortcode('velocity-youtube', function($atts) {
+    $atribut = shortcode_atts( array(
+        'link' 	=> ''
+    ), $atts );
+    $link = $atribut['link'];	
+
+	// Deteksi dan simpan informasi tautan YouTube
+	$html = '';
+	$youtube_pattern = '/https?:\/\/(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]{11})/';
+	preg_match($youtube_pattern, $link, $youtube_matches);	
+	if (!empty($youtube_matches[1]) && $link) {
+		$youtube_video_id = esc_html($youtube_matches[1]);
+		$html .= '<iframe class="my-2" width="100%" height="400" src="https://www.youtube.com/embed/'.$youtube_video_id.'" frameborder="0" allowfullscreen></iframe>';
+	}
+    return $html;
+});
