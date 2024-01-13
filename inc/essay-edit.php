@@ -83,7 +83,7 @@ if (isset($_POST['post_title'])) {
       
     </div>
 
-<?php 
+<?php $ket = '<small>Shortcode audio: <b>[audio mp3="https://example.com/audio.mp3"][/audio]</b><br>Shortcode youtube: <b>[velocity-youtube link="https://www.youtube.com/watch?v=poC51BAa4bg"]</b></small>';
 $no = 0;
 if($essay) {
     $i = 1;
@@ -93,6 +93,7 @@ if($essay) {
             <div class="vd-hapus" onClick="hapus('velocity-field-<?php echo $no;?>')">x</div>
             <h5 class="vd-field-title mt-0">Soal</h5>
             <textarea class="tanya-awal form-control" id="ask-<?php echo $no;?>" name="essay[]"><?php echo $tanya;?></textarea>
+            <?php echo $ket;?>
         </div>
     <?php }
     $jumlah_essay = count($essay);
@@ -158,7 +159,7 @@ jQuery(function($) {
         var function_hapus = "hapus('velocity-field-"+i+"');";
         var awal = '<div class="velocity-form-control" id="velocity-field-'+i+'">';
         var close = '<div class="vd-hapus" onClick="'+function_hapus+'">x</div>';
-        var ask = '<h5 class="vd-field-title">Soal</h5><textarea class="form-control" id="ask'+i+'" name="essay[]"></textarea>';
+        var ask = '<h5 class="vd-field-title">Soal</h5><textarea class="form-control" id="ask'+i+'" name="essay[]"></textarea><?php echo $ket;?>';
         var akhir = '</div>';
         $(".velocity-field").append(awal+close+ask+akhir);
         wp.editor.initialize(

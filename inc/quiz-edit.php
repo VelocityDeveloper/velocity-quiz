@@ -26,7 +26,8 @@ if (isset($_POST['quiz'])) {
         'b' => $quiz['b'][$key],
         'c' => $quiz['c'][$key],
         'd' => $quiz['d'][$key],
-        'jawaban' => $quiz['jawaban'][$key]
+        'jawaban' => $quiz['jawaban'][$key],
+        'pembahasan' => $quiz['pembahasan'][$key]
     );
   }
   // Mengganti sub-array 'quiz' dengan array yang baru dibuat
@@ -109,7 +110,7 @@ if (isset($_POST['post_title'])) {
         <option value="Ya"<?php echo $tampil_nilai == 'Ya' ? ' selected="selected"':'';?>>Ya</option>
         <option value="Tidak"<?php echo $tampil_nilai == 'Tidak' ? ' selected="selected"':'';?>>Tidak</option>
       </select>
-      <small class="text-muted">Jika aktif, hasil nilai akan langsung keluar.</small>
+      <small class="text-muted">Jika aktif, hasil nilai dan kunci jawaban beserta pembahasannya akan langsung tampil.</small>
       
     </div>
 
@@ -141,6 +142,7 @@ if (isset($_POST['post_title'])) {
         $jawaban .= '</select>';
         $jawaban .= '</div>';
 
+$ket = '<small>Shortcode audio: <b>[audio mp3="https://example.com/audio.mp3"][/audio]</b><br>Shortcode youtube: <b>[velocity-youtube link="https://www.youtube.com/watch?v=poC51BAa4bg"]</b></small>';
 $no = 0;
 if($quiz) {
     $i = 1;
@@ -150,7 +152,7 @@ if($quiz) {
             <div class="vd-hapus" onClick="hapus('velocity-field-<?php echo $no;?>')">x</div>
             <h5 class="vd-field-title mt-0">Soal</h5>
             <textarea class="tanya-awal form-control" id="ask-<?php echo $no;?>" name="quiz[tanya][]"><?php echo $data['tanya'];?></textarea>
-            <?php 
+            <?php echo $ket;
         $array_pl = ['a'=>'A','b'=>'B','c'=>'C','d'=>'D'];
 
         echo '<h5 class="vd-field-title">Pilihan Jawaban</h5>';
@@ -170,6 +172,9 @@ if($quiz) {
             }
             echo '</select>';
         echo '</div>'; ?>
+
+      <h5 class="vd-field-title">Pembahasan</h5>
+      <textarea class="form-control" name="quiz[pembahasan][]"><?php echo isset($data['pembahasan']) ? $data['pembahasan'] : ''; ?></textarea>
 
         </div>
     <?php }
@@ -234,11 +239,12 @@ jQuery(function($) {
         var function_hapus = "hapus('velocity-field-"+i+"');";
         var awal = '<div class="velocity-form-control" id="velocity-field-'+i+'">';
         var close = '<div class="vd-hapus" onClick="'+function_hapus+'">x</div>';
-        var ask = '<h5 class="vd-field-title">Soal</h5><textarea class="form-control" id="ask'+i+'" name="quiz[tanya][]"></textarea>';
+        var ask = '<h5 class="vd-field-title">Soal</h5><textarea class="form-control" id="ask'+i+'" name="quiz[tanya][]"></textarea><?php echo $ket;?>';
         var pj = '<?php echo $pilihan_jawaban;?>';
         var jwb = '<?php echo $jawaban;?>';
+        var pmb = '<h5 class="vd-field-title">Pembahasan</h5><textarea class="form-control" name="quiz[pembahasan][]"></textarea>';
         var akhir = '</div>';
-        $(".velocity-field").append(awal+close+ask+pj+jwb+akhir);
+        $(".velocity-field").append(awal+close+ask+pj+jwb+pmb+akhir);
         wp.editor.initialize(
         'ask'+i,
         {

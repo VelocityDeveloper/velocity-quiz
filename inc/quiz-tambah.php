@@ -20,7 +20,8 @@ if ($quiz) {
         'b' => $quiz['b'][$key],
         'c' => $quiz['c'][$key],
         'd' => $quiz['d'][$key],
-        'jawaban' => $quiz['jawaban'][$key]
+        'jawaban' => $quiz['jawaban'][$key],
+        'pembahasan' => $quiz['pembahasan'][$key]
     );
   }
   // Mengganti sub-array 'quiz' dengan array yang baru dibuat
@@ -88,7 +89,7 @@ if ($post_title) {
         <option value="Ya">Ya</option>
         <option value="Tidak">Tidak</option>
       </select>
-      <small class="text-muted">Jika aktif, hasil nilai akan langsung keluar.</small>
+      <small class="text-muted">Jika aktif, hasil nilai dan kunci jawaban beserta pembahasannya akan langsung tampil.</small>
 
     </div>
 
@@ -156,14 +157,16 @@ jQuery(function($) {
   var i = 1;  
   $("#tambah").click(function(){
     i++;
+    var ket = '<small>Shortcode audio: <b>[audio mp3="https://example.com/audio.mp3"][/audio]</b><br>Shortcode youtube: <b>[velocity-youtube link="https://www.youtube.com/watch?v=poC51BAa4bg"]</b></small>';
     var function_hapus = "hapus('velocity-field-"+i+"');";
     var awal = '<div class="velocity-form-control" id="velocity-field-'+i+'">';
     var close = '<div class="vd-hapus" onClick="'+function_hapus+'">x</div>';
-    var ask = '<h5 class="vd-field-title">Soal</h5><textarea class="form-control" id="ask'+i+'" name="quiz[tanya][]"></textarea>';
+    var ask = '<h5 class="vd-field-title">Soal</h5><textarea class="form-control" id="ask'+i+'" name="quiz[tanya][]"></textarea>'+ket;
     var pj = '<?php echo $pilihan_jawaban;?>';
     var jwb = '<?php echo $jawaban;?>';
+    var pmb = '<h5 class="vd-field-title">Pembahasan</h5><textarea class="form-control" name="quiz[pembahasan][]"></textarea>';
     var akhir = '</div>';
-    $(".velocity-field").append(awal+close+ask+pj+jwb+akhir);
+    $(".velocity-field").append(awal+close+ask+pj+jwb+pmb+akhir);
     wp.editor.initialize(
       'ask'+i,
       {

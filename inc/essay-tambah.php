@@ -100,10 +100,11 @@ jQuery(function($) {
   var i = 1;  
   $("#tambah").click(function(){
     i++;
+    var ket = '<small>Shortcode audio: <b>[audio mp3="https://example.com/audio.mp3"][/audio]</b><br>Shortcode youtube: <b>[velocity-youtube link="https://www.youtube.com/watch?v=poC51BAa4bg"]</b></small>';
     var function_hapus = "hapus('velocity-field-"+i+"');";
     var awal = '<div class="velocity-form-control" id="velocity-field-'+i+'">';
     var close = '<div class="vd-hapus" onClick="'+function_hapus+'">x</div>';
-    var ask = '<h5 class="vd-field-title">Soal</h5><textarea class="form-control" id="ask'+i+'" name="essay[]"></textarea>';
+    var ask = '<h5 class="vd-field-title">Soal</h5><textarea class="form-control" id="ask'+i+'" name="essay[]"></textarea>'+ket;
     var akhir = '</div>';
     $(".velocity-field").append(awal+close+ask+akhir);
     wp.editor.initialize(
