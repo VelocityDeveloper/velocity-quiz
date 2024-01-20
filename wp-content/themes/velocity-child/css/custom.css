@@ -1,0 +1,107 @@
+.fl-contact-form textarea, .fl-contact-form input[type="text"], .fl-contact-form input[type="tel"], .fl-contact-form input[type="email"] {
+	display: inline-block;
+	width: 100%;
+	border: 1px solid #ddd;
+	padding: 5px 10px;
+	font-size: 13px;
+	color: #373737;
+	border-radius: 3px;
+}
+header.fl-theme-builder-header-scrolled .sticky-off {
+	display: none;
+}
+.vel-basic-modul {
+	position: relative;
+	padding-left: 90px;
+	font-size: 15px;
+	color: #646363;
+}
+.vel-basic-modul .vel-basic-no {
+	position: absolute;
+	left: 0;
+	font-weight: bold;
+	font-family: Montserrat;
+	font-size: 17px;
+	color: var(--bs-primary);
+}
+.vel-basic-modul .vel-basic-no::after {
+	content: '';
+	position: absolute;
+	height: 1px;
+	width: 58px;
+	background-color: #333;
+	top: 12px;
+	left: 27px;
+}
+.vel-basic-modul .vel-basic-title {
+	font-weight: bold;
+	font-family: Montserrat;
+	color: #333;
+	font-size: 25px;
+	line-height: 1.2;
+	margin-bottom: 13px;
+}
+header.fl-builder-content {
+    position: relative;
+    z-index: 9;
+}
+.breadcrumb-item+.breadcrumb-item::before {
+    margin: 0 7px !important;
+}
+
+
+.velocity-menu {
+    padding: 0;
+    margin: 0;
+}
+.velocity-menu li ul > li:first-child,
+.velocity-menu > li:first-child {
+    border-top: 1px solid #ddd;
+}
+.velocity-menu li {
+    position: relative;
+    display: block;
+    border-bottom: 1px solid #ddd;
+}
+.velocity-menu li a {
+    color: #111111;
+    padding: 10px 0;
+    display: block;
+    position: relative;
+}
+.velocity-menu li a:hover {color: #000000;}
+.velocity-menu li.menu-item-has-children > a {padding: 10px 23px 10px 0;}
+.velocity-menu li.menu-item-has-children i {
+    color: #111111;
+    position: absolute;
+    right: 2px;
+    top: 12px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 16px;
+}
+.velocity-menu li ul {
+	padding-left: 0;
+	display:none;
+}
+.velocity-menu li ul li {
+	padding-left: 20px !important;
+}
+.velocity-menu li ul li a::before {
+	content: '- ';
+}
+
+
+
+@media only screen and (max-width: 768px) {
+  html, body {
+      overflow-x: hidden;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+	.fl-module-menu ul.menu .sub-menu {
+		max-height: 390px;
+		overflow-x: scroll;
+	}
+}
