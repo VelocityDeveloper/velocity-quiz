@@ -9,11 +9,12 @@
     $sudahjawab = $wpdb->get_results("SELECT * FROM $table_name WHERE post_id = $post_id and user_id = $user_id");
     $waktu = get_post_meta($post_id,'waktu',true);
     $time = $waktu ? $waktu.' menit' : '-';
-    $tampil_nilai = get_post_meta($post_id,'tampil_nilai',true);
+    $kunci = get_post_meta($post_id,'kunci',true);
     $date = date( 'd-m-Y H:i:s', current_time( 'timestamp', 0 ) );
     $act = isset($_GET['act']) ? $_GET['act'] : '';
+    $quiz = get_post_meta($post_id,'quiz',true);
 
-    $infoquiz = '<h5 class="card-title border-bottom pb-3 text-center fw-bold">Detail</h5>';
+    $infoquiz = '<h5 class="card-title border-bottom pb-3 text-center fw-bold">Detail Quiz</h5>';
     $infoquiz .= '<table class="table"><tbody>';
     $infoquiz .= '<tr>';
         $infoquiz .= '<td class="fw-bold">Nama Quiz</td>';
@@ -42,9 +43,9 @@
             $detailquiz = $sudahjawab[0]->vq_detail;
             $detail = json_decode($detailquiz);
             $hasil_nilai = $sudahjawab[0]->nilai;
-            $jml_benar = $detail->benar;
-            $jml_salah = $detail->salah;
-            $jumlahsoal = $jml_benar + $jml_salah;         
+            $jml_benar = $detail->penilaian->benar;
+            $jml_salah = $detail->penilaian->salah;
+            $jumlahsoal = $jml_benar + $jml_salah; 
             echo '<div class="card mx-auto w-100 mb-3" style="max-width: 500px;">';
                 echo '<div class="card-hasil-nilai card-body text-center bg-nilai">';
                     echo '<h3 class="card-title">Nilai anda:</h3>';
@@ -55,7 +56,69 @@
                     echo '<li class="list-group-item"><i class="fa fa-close text-danger"></i> Salah = '.$jml_salah.'</li>';
                     echo '<li class="list-group-item"><i class="fa fa-wpforms"></i> Jumlah Soal = '.$jumlahsoal.'</li>';
                 echo '</ul>';
+                if($kunci == 'Ya'){
+                    echo '<div class="card-footer">';
+                        echo '<button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal-'.$post_id.'">';
+                            echo 'Detail Pengerjaan';
+                        echo '</button>';
+                    echo '</div>';
+                }
             echo '</div>';
+
+        if($kunci == 'Ya'){
+            echo '<div class="modal modal-lg fade" id="modal-'.$post_id.'" tabindex="-1" aria-labelledby="modal-'.$post_id.'Label" aria-hidden="true">';
+            echo '<div class="modal-dialog">';
+                echo '<div class="modal-content">';
+                    echo '<div class="modal-header">';
+                        echo '<h5 class="modal-title" id="modal-'.$post_id.'Label">Detail Pengerjaan</h5>';
+                        echo '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>';
+                    echo '</div>';
+                    echo '<div class="modal-body">';
+                    $i = 0;
+                    $pilihan_jawaban = array('a','b','c','d');
+                    foreach ($quiz as $data) {
+                        $urutan = $i++;
+                        $nomorsoal = $urutan + 1;
+                        $jawabansaya = $detail->jawaban[$urutan];
+                        $jawabanbetul = $data['jawaban'];
+                        echo '<div class="fs-6 fw-bold mb-3 text-info">Soal '.$nomorsoal.'</div>';
+                        echo '<div class="mb-2"><b>Pertanyaan:</b> '.do_shortcode($data['tanya']).'</div>';
+
+                        echo '<div class="pilihan-jawaban">';
+                        foreach ($pilihan_jawaban as $abjab) {
+                            $classbetul = '';
+                            if($jawabansaya == $abjab) {
+                                $classbetul = ' bg-danger text-white';
+                            } if($jawabanbetul == $abjab){
+                                $classbetul = ' bg-success text-white';
+                            }
+                            echo '<div class="d-block">';
+                                echo '<label class="w-100 p-0">';
+                                    echo '<div class="input-group mb-2">';
+                                        echo '<div class="input-group-prepend text-uppercase">';
+                                            echo '<div class="input-group-text'.$classbetul.' rounded-start rounded-0">'.$abjab.'</div>';
+                                        echo '</div>';
+                                        echo '<div class="form-control'.$classbetul.'">'.$data[$abjab].'</div>';
+                                    echo '</div>';
+                                echo '</label>';
+                            echo '</div>';
+                        }
+                        echo '</div>';
+
+                        if($data['pembahasan']){
+                            echo '<div class="mb-0"><b>Penjelasan:</b> '.$data['pembahasan'].'</div>';
+                        } if($nomorsoal != count($quiz)){
+                            echo '<hr>';
+                        }
+                    }
+                    echo '</div>';
+                    echo '<div class="modal-footer">';
+                        echo '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>';
+                    echo '</div>';
+                echo '</div>';
+            echo '</div>';
+            echo '</div>';
+            }
 
             echo '<div class="card mx-auto w-100 p-3" style="max-width: 500px;">';
                 echo $infoquiz;
@@ -72,8 +135,7 @@
                     <?php the_title(); ?>
                 </div>
                 <div class="card-body">
-                    <?php $quiz = get_post_meta($post_id,'quiz',true);
-                    $i = 1;
+                    <?php $i = 1;
                     $jml_quiz = count($quiz);
                     foreach ($quiz as $data) {
                         $no = $i++;

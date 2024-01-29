@@ -8,7 +8,7 @@ $post_cat_slug    = isset($_POST['quizcat']) ? $_POST['quizcat'] : $quiz_cat_slu
 $quiz               = isset($_POST['quiz']) ? $_POST['quiz'] : get_post_meta($post_id,'quiz',true);
 $status             = isset($_POST['status']) ? $_POST['status'] : get_post_status($post_id);
 $waktu              = isset($_POST['waktu']) ? $_POST['waktu'] : get_post_meta($post_id,'waktu',true);
-$tampil_nilai       = isset($_POST['tampil_nilai']) ? $_POST['tampil_nilai'] : get_post_meta($post_id,'tampil_nilai',true);
+$kunci       = isset($_POST['kunci']) ? $_POST['kunci'] : get_post_meta($post_id,'kunci',true);
 
 
 // echo '<pre>'.print_r($quiz,1).'</pre>';
@@ -54,7 +54,7 @@ if (isset($_POST['post_title'])) {
     if ($result !== 0) {
         // Perbarui atau tambahkan post meta
         update_post_meta($post_id,'waktu',$waktu);
-        update_post_meta($post_id,'tampil_nilai',$tampil_nilai); 
+        update_post_meta($post_id,'kunci',$kunci); 
         $editquiz = isset($_POST['quiz']) ? $quiz : '';       
         update_post_meta($post_id,'quiz',$editquiz);
         echo '<div class="alert alert-success">Quiz berhasil diperbarui.</div>';
@@ -105,12 +105,12 @@ if (isset($_POST['post_title'])) {
       <input type="number" class="form-control" name="waktu" value="<?php echo $waktu; ?>">
       <small class="text-muted">Dalam menit. Kosongkan jika tanpa batas waktu pengerjaan.</small>
 
-      <h5 class="vd-field-title">Tampil Nilai</h5>
-      <select class="form-select" name="tampil_nilai">
-        <option value="Ya"<?php echo $tampil_nilai == 'Ya' ? ' selected="selected"':'';?>>Ya</option>
-        <option value="Tidak"<?php echo $tampil_nilai == 'Tidak' ? ' selected="selected"':'';?>>Tidak</option>
+      <h5 class="vd-field-title">Tampilkan Kunci Jawaban</h5>
+      <select class="form-select" name="kunci">
+        <option value="Ya"<?php echo $kunci == 'Ya' ? ' selected="selected"':'';?>>Ya</option>
+        <option value="Tidak"<?php echo $kunci == 'Tidak' ? ' selected="selected"':'';?>>Tidak</option>
       </select>
-      <small class="text-muted">Jika aktif, hasil nilai dan kunci jawaban beserta pembahasannya akan langsung tampil.</small>
+      <small class="text-muted">Jika aktif, kunci jawaban beserta pembahasannya akan langsung tampil.</small>
       
     </div>
 
@@ -190,6 +190,10 @@ if($quiz) {
     <option value="publish"<?php echo $status == 'publish' ? ' selected="selected"':'';?>>Publish</option>
     <option value="draft"<?php echo $status == 'draft' ? ' selected="selected"':'';?>>Draft</option>
   </select>
+
+  <div class="alert alert-warning py-2">
+    <strong>Peringatan:</strong> Jangan mengubah soal ketika sudah ada yang mengerjakan
+  </div>
 
   <div id="tambah" class="btn btn-info text-white">Tambah Soal</div>
   <button type="submit" class="btn btn-success">Simpan</button>

@@ -5,7 +5,7 @@ $post_categories    = isset($_POST['quizcat']) ? $_POST['quizcat'] : '';
 $quiz               = isset($_POST['quiz']) ? $_POST['quiz'] : '';
 $status             = isset($_POST['status']) ? $_POST['status'] : '';
 $waktu              = isset($_POST['waktu']) ? $_POST['waktu'] : '';
-$tampil_nilai       = isset($_POST['tampil_nilai']) ? $_POST['tampil_nilai'] : '';
+$kunci              = isset($_POST['kunci']) ? $_POST['kunci'] : '';
 
 // $all_meta_values = get_post_meta(52,'quiz',false);
 // echo '<pre>'.print_r($all_meta_values,1).'</pre>';
@@ -42,7 +42,7 @@ if ($post_title) {
       wp_set_object_terms($pid,$post_categories,'quiz-category');
     }
     update_post_meta($pid,'waktu',$waktu);
-    update_post_meta($pid,'tampil_nilai',$tampil_nilai);
+    update_post_meta($pid,'kunci',$kunci);
     if($quiz){
       update_post_meta($pid,'quiz',$quiz);      
     }
@@ -84,12 +84,12 @@ if ($post_title) {
       <input type="number" class="form-control" name="waktu">
       <small class="text-muted">Dalam menit. Kosongkan jika tanpa batas waktu pengerjaan.</small>
 
-      <h5 class="vd-field-title">Tampil Nilai</h5>
-      <select class="form-select" name="tampil_nilai">
+      <h5 class="vd-field-title">Tampilkan Kunci Jawaban</h5>
+      <select class="form-select" name="kunci">
         <option value="Ya">Ya</option>
         <option value="Tidak">Tidak</option>
       </select>
-      <small class="text-muted">Jika aktif, hasil nilai dan kunci jawaban beserta pembahasannya akan langsung tampil.</small>
+      <small class="text-muted">Jika aktif, kunci jawaban beserta pembahasannya akan langsung tampil.</small>
 
     </div>
 

@@ -9,18 +9,20 @@ function submitquiz_ajax() {
     $post_id = isset($_POST['post_id'])?$_POST['post_id'] : '';
     $jawaban = isset($_POST['jawaban'])?$_POST['jawaban'] : '';
     $quiz = get_post_meta($post_id,'quiz',true);
-    $tampilnilai = get_post_meta($post_id,'tampil_nilai',true);
+    $kunci = get_post_meta($post_id,'kunci',true);
     $i = 0;
     $benar[] = 0;
     $salah[] = 0;
     $nilai = 0;
+    $jawaban_anda = [];
     foreach ($jawaban as $jawab) {
         $no = $i++;
         if($quiz[$no]['jawaban'] == $jawab){
             $benar[] = 1;
         } else {
             $salah[] = 1;
-        }
+        }        
+        $jawaban_anda[$no] = $jawab;
     }
     $jml_benar = array_sum($benar);
     $jml_salah = array_sum($salah);
@@ -29,7 +31,9 @@ function submitquiz_ajax() {
         $nilaix = 100 / $jumlahsoal * $jml_benar;
         $nilai  = (round($nilaix,1));
     }
-    $array_jawaban = array(
+    $detail['jawaban'] = $jawaban_anda;
+    $detail['penilaian'] = array(
+        'jumlahsoal' => $jumlahsoal,
         'benar' => $jml_benar,
         'salah' => $jml_salah,
     );
@@ -39,30 +43,19 @@ function submitquiz_ajax() {
             'vq_type' => 'quiz',
             'user_id' => get_current_user_id(),
             'post_id' => $post_id,
-            'vq_detail'  => json_encode($array_jawaban),
+            'vq_detail'  => json_encode($detail),
             'nilai'  => $nilai,
         ));
     }
     echo '<div class="card mx-auto w-100" style="max-width: 500px;">';
         echo '<div class="card-hasil-nilai card-body text-center bg-nilai">';
-			if($tampilnilai=='Ya') {
-				echo '<h3 class="card-title">Nilai anda:</h3>';
-				echo '<p class="card-text h1 fs-1">'.$nilai.'</p>';
-			} else {
 				echo '<h3 class="card-text h2 text-white">Quiz telah selesai</h3>';
-			}
         echo '</div>';
-		if($tampilnilai=='Ya') {
 			echo '<ul class="list-group list-group-flush">';
                 echo '<li class="list-group-item"><i class="fa fa-check text-success"></i> Benar = '.$jml_benar.'</li>';
                 echo '<li class="list-group-item"><i class="fa fa-close text-danger"></i> Salah = '.$jml_salah.'</li>';
                 echo '<li class="list-group-item"><i class="fa fa-wpforms"></i> Jumlah Soal = '.$jumlahsoal.'</li>';
 			echo '</ul>';
-		} else {
-			echo '<div class="card-body text-center">';
-                echo 'Terima kasih, ujian anda telah selesai. klik tombol selesai untuk kembali';
-            echo '</div>';
-		}
         echo '<div class="card-footer">';
             echo '<a class="btn btn-primary w-100" href="'.get_the_permalink($post_id).'">SELESAI</a>';
         echo '</div>';
