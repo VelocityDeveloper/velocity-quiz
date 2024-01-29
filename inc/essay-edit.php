@@ -9,7 +9,9 @@ $post_cat_slug    = isset($_POST['quizcat']) ? $_POST['quizcat'] : $essay_cat_sl
 $essay               = isset($_POST['essay']) ? $_POST['essay'] : get_post_meta($post_id,'essay',true);
 $status             = isset($_POST['status']) ? $_POST['status'] : get_post_status($post_id);
 $waktu              = isset($_POST['waktu']) ? $_POST['waktu'] : get_post_meta($post_id,'waktu',true);
+$kunci              = isset($_POST['kunci']) ? $_POST['kunci'] : get_post_meta($post_id,'kunci',true);
 
+//echo '<pre>'.print_r($essay,1).'</pre>'; 
 
 if (isset($_POST['post_title'])) {
     $actual_link    = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
@@ -31,6 +33,7 @@ if (isset($_POST['post_title'])) {
     if ($result !== 0) {
         // Perbarui atau tambahkan post meta
         update_post_meta($post_id,'waktu',$waktu);
+        update_post_meta($pid,'kunci',$kunci);
         $editessay = isset($_POST['essay']) ? $_POST['essay'] : '';
         update_post_meta($post_id,'essay',$editessay);
         echo '<div class="alert alert-success">Essay berhasil diperbarui.</div>';
@@ -80,6 +83,13 @@ if (isset($_POST['post_title'])) {
       <h5 class="vd-field-title">Waktu Pengerjaan</h5>
       <input type="number" class="form-control" name="waktu" value="<?php echo $waktu; ?>">
       <small class="text-muted">Dalam menit. Kosongkan jika tanpa batas waktu pengerjaan.</small>
+
+      <h5 class="vd-field-title">Tampilkan Kunci Jawaban</h5>
+      <select class="form-select" name="kunci">
+        <option value="Ya"<?php echo $kunci == 'Ya' ? ' selected="selected"':'';?>>Ya</option>
+        <option value="Tidak"<?php echo $kunci == 'Tidak' ? ' selected="selected"':'';?>>Tidak</option>
+      </select>
+      <small class="text-muted">Jika aktif, kunci jawaban beserta pembahasannya akan ditampilkan.</small>
       
     </div>
 
@@ -87,16 +97,18 @@ if (isset($_POST['post_title'])) {
 $no = 0;
 if($essay) {
     $i = 1;
-    foreach ($essay as $tanya) {
-        $no = $i++; ?>
+    foreach ($essay['tanya'] as $tanya) {
+        $no = $i++;
+        $urutan = $no - 1; ?>
         <div class="velocity-form-control" id="velocity-field-<?php echo $no;?>">
             <div class="vd-hapus" onClick="hapus('velocity-field-<?php echo $no;?>')">x</div>
             <h5 class="vd-field-title mt-0">Soal</h5>
-            <textarea class="tanya-awal form-control" id="ask-<?php echo $no;?>" name="essay[]"><?php echo $tanya;?></textarea>
+            <textarea class="tanya-awal form-control" id="ask-<?php echo $no;?>" name="essay[tanya][]"><?php echo $tanya;?></textarea>
             <?php echo $ket;?>
+            <h5 class="vd-field-title">Pembahasan</h5><textarea class="form-control" name="essay[pembahasan][]"><?php echo $essay['pembahasan'][$urutan];?></textarea>
         </div>
     <?php }
-    $jumlah_essay = count($essay);
+    $jumlah_essay = count($essay['tanya']);
 } else { // jika quiz kosong 
     $no = 1;
     $jumlah_essay = 0;
@@ -108,6 +120,10 @@ if($essay) {
     <option value="publish"<?php echo $status == 'publish' ? ' selected="selected"':'';?>>Publish</option>
     <option value="draft"<?php echo $status == 'draft' ? ' selected="selected"':'';?>>Draft</option>
   </select>
+  
+  <div class="alert alert-warning py-2">
+    <strong>Peringatan:</strong> Jangan mengubah soal ketika sudah ada yang mengerjakan
+  </div>
 
   <div id="tambah" class="btn btn-info text-white">Tambah Soal</div>
   <button type="submit" class="btn btn-success">Simpan</button>
@@ -159,9 +175,10 @@ jQuery(function($) {
         var function_hapus = "hapus('velocity-field-"+i+"');";
         var awal = '<div class="velocity-form-control" id="velocity-field-'+i+'">';
         var close = '<div class="vd-hapus" onClick="'+function_hapus+'">x</div>';
-        var ask = '<h5 class="vd-field-title">Soal</h5><textarea class="form-control" id="ask'+i+'" name="essay[]"></textarea><?php echo $ket;?>';
+        var ask = '<h5 class="vd-field-title">Soal</h5><textarea class="form-control" id="ask'+i+'" name="essay[tanya][]"></textarea><?php echo $ket;?>';
+        var pmb = '<h5 class="vd-field-title">Pembahasan</h5><textarea class="form-control" name="essay[pembahasan][]"></textarea>';
         var akhir = '</div>';
-        $(".velocity-field").append(awal+close+ask+akhir);
+        $(".velocity-field").append(awal+close+ask+pmb+akhir);
         wp.editor.initialize(
         'ask'+i,
         {

@@ -89,7 +89,7 @@ if ($post_title) {
         <option value="Ya">Ya</option>
         <option value="Tidak">Tidak</option>
       </select>
-      <small class="text-muted">Jika aktif, kunci jawaban beserta pembahasannya akan langsung tampil.</small>
+      <small class="text-muted">Jika aktif, kunci jawaban beserta pembahasannya akan ditampilkan.</small>
 
     </div>
 

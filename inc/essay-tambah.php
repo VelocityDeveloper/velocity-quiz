@@ -5,6 +5,7 @@ $post_categories    = isset($_POST['quizcat']) ? $_POST['quizcat'] : '';
 $essay              = isset($_POST['essay']) ? $_POST['essay'] : '';
 $status             = isset($_POST['status']) ? $_POST['status'] : '';
 $waktu              = isset($_POST['waktu']) ? $_POST['waktu'] : '';
+$kunci              = isset($_POST['kunci']) ? $_POST['kunci'] : '';
 
 // $all_meta_values = get_post_meta(52,'quiz',false);
 // echo '<pre>'.print_r($essay,1).'</pre>';
@@ -25,6 +26,7 @@ if ($post_title) {
     } if($essay){
         update_post_meta($pid,'essay',$essay);
     }
+    update_post_meta($pid,'kunci',$kunci);
     echo '<div class="alert alert-success">Essay berhasil disimpan.</div>';
     echo '<script>window.setTimeout(function(){
         window.location.href = "'.get_permalink().'?hal=essay&act=edit&id='.$pid.'";
@@ -62,6 +64,13 @@ if ($post_title) {
       <h5 class="vd-field-title">Waktu Pengerjaan</h5>
       <input type="number" class="form-control" name="waktu">
       <small class="text-muted">Dalam menit. Kosongkan jika tanpa batas waktu pengerjaan.</small>
+
+      <h5 class="vd-field-title">Tampilkan Kunci Jawaban</h5>
+      <select class="form-select" name="kunci">
+        <option value="Ya">Ya</option>
+        <option value="Tidak">Tidak</option>
+      </select>
+      <small class="text-muted">Jika aktif, kunci jawaban beserta pembahasannya akan ditampilkan.</small>
 
     </div>
 
@@ -104,9 +113,10 @@ jQuery(function($) {
     var function_hapus = "hapus('velocity-field-"+i+"');";
     var awal = '<div class="velocity-form-control" id="velocity-field-'+i+'">';
     var close = '<div class="vd-hapus" onClick="'+function_hapus+'">x</div>';
-    var ask = '<h5 class="vd-field-title">Soal</h5><textarea class="form-control" id="ask'+i+'" name="essay[]"></textarea>'+ket;
+    var ask = '<h5 class="vd-field-title">Soal</h5><textarea class="form-control" id="ask'+i+'" name="essay[tanya][]"></textarea>'+ket;
+    var pmb = '<h5 class="vd-field-title">Pembahasan</h5><textarea class="form-control" name="essay[pembahasan][]"></textarea>';
     var akhir = '</div>';
-    $(".velocity-field").append(awal+close+ask+akhir);
+    $(".velocity-field").append(awal+close+ask+pmb+akhir);
     wp.editor.initialize(
       'ask'+i,
       {

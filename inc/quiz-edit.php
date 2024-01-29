@@ -110,7 +110,7 @@ if (isset($_POST['post_title'])) {
         <option value="Ya"<?php echo $kunci == 'Ya' ? ' selected="selected"':'';?>>Ya</option>
         <option value="Tidak"<?php echo $kunci == 'Tidak' ? ' selected="selected"':'';?>>Tidak</option>
       </select>
-      <small class="text-muted">Jika aktif, kunci jawaban beserta pembahasannya akan langsung tampil.</small>
+      <small class="text-muted">Jika aktif, kunci jawaban beserta pembahasannya akan ditampilkan.</small>
       
     </div>
 

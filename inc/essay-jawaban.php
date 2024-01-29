@@ -62,7 +62,7 @@ echo '<div class="table-responsive">
                 echo '<input type="hidden" name="post_id" value="'.$post_id.'">';
                 echo '<input type="hidden" name="user_id" value="'.$user_id.'">';
                 $nomor=1;
-                foreach($essay_soal as $skey => $svalue){
+                foreach($essay_soal['tanya'] as $skey => $svalue){
                   $nm = $nomor++;
                   echo '<div class="card-jawaban list-group-item px-0 mb-3">';
                     echo '<div class="card shadow-sm">';
@@ -73,7 +73,7 @@ echo '<div class="table-responsive">
                       echo '<div class="soal">';
                         echo '<label for="soal">Soal</label>';
                         echo '<div class="card-col-soal border rounded p-3 mb-3">';
-                          echo $svalue;
+                          echo do_shortcode($svalue);
                           echo '<input type="hidden" name="idsoal" value="'.$skey.'">';
                         echo '</div>';
                       echo '</div>  ';

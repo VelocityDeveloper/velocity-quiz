@@ -81,35 +81,44 @@
                         $nomorsoal = $urutan + 1;
                         $jawabansaya = $detail->jawaban[$urutan];
                         $jawabanbetul = $data['jawaban'];
-                        echo '<div class="fs-6 fw-bold mb-3 text-info">Soal '.$nomorsoal.'</div>';
-                        echo '<div class="mb-2"><b>Pertanyaan:</b> '.do_shortcode($data['tanya']).'</div>';
+                        echo '<div class="card-jawaban list-group-item px-0 mb-3">';
+                            echo '<div class="card shadow-sm">';
+                                echo '<div class="card-header">';
+                                    echo '<span> Soal no. <strong>'.$nomorsoal.'</strong> </span>';
+                                echo '</div>';
+                                echo '<div class="card-body">';
+                                echo '<div class="mb-1"><b>Pertanyaan:</b></div>';
+                                echo '<div class="card-col-soal border rounded p-3 mb-3">'.do_shortcode($data['tanya']).'</div>';
 
-                        echo '<div class="pilihan-jawaban">';
-                        foreach ($pilihan_jawaban as $abjab) {
-                            $classbetul = '';
-                            if($jawabansaya == $abjab) {
-                                $classbetul = ' bg-danger text-white';
-                            } if($jawabanbetul == $abjab){
-                                $classbetul = ' bg-success text-white';
-                            }
-                            echo '<div class="d-block">';
-                                echo '<label class="w-100 p-0">';
-                                    echo '<div class="input-group mb-2">';
-                                        echo '<div class="input-group-prepend text-uppercase">';
-                                            echo '<div class="input-group-text'.$classbetul.' rounded-start rounded-0">'.$abjab.'</div>';
-                                        echo '</div>';
-                                        echo '<div class="form-control'.$classbetul.'">'.$data[$abjab].'</div>';
+                                echo '<div class="pilihan-jawaban">';
+                                echo '<b>Jawaban Anda:</b>';
+                                foreach ($pilihan_jawaban as $abjab) {
+                                    $classbetul = '';
+                                    if($jawabansaya == $abjab) {
+                                        $classbetul = ' bg-danger text-white';
+                                    } if($jawabanbetul == $abjab){
+                                        $classbetul = ' bg-success text-white';
+                                    }
+                                    echo '<div class="d-block">';
+                                        echo '<label class="w-100 p-0">';
+                                            echo '<div class="input-group mb-2">';
+                                                echo '<div class="input-group-prepend text-uppercase">';
+                                                    echo '<div class="input-group-text'.$classbetul.' rounded-start rounded-0">'.$abjab.'</div>';
+                                                echo '</div>';
+                                                echo '<div class="form-control'.$classbetul.'">'.$data[$abjab].'</div>';
+                                            echo '</div>';
+                                        echo '</label>';
                                     echo '</div>';
-                                echo '</label>';
-                            echo '</div>';
-                        }
-                        echo '</div>';
+                                }
+                                echo '</div>';
 
-                        if($data['pembahasan']){
-                            echo '<div class="mb-0"><b>Penjelasan:</b> '.$data['pembahasan'].'</div>';
-                        } if($nomorsoal != count($quiz)){
-                            echo '<hr>';
-                        }
+                                if($data['pembahasan']){
+                                    echo '<div class="mb-1"><b>Penjelasan:</b></div>';
+                                    echo '<div class="card-col-soal border rounded border-dark p-3">'.$data['pembahasan'].'</div>';
+                                }
+                            echo '</div>';
+                            echo '</div>';
+                        echo '</div>';
                     }
                     echo '</div>';
                     echo '<div class="modal-footer">';

@@ -10,9 +10,10 @@
     $sudahjawab = $wpdb->get_results("SELECT * FROM $table_name WHERE post_id = $post_id and user_id = $user_id");
     $waktu = get_post_meta($post_id,'waktu',true);
     $time = $waktu ? $waktu.' menit' : '-';
-    $tampil_nilai = get_post_meta($post_id,'tampil_nilai',true);
+    $kunci = get_post_meta($post_id,'kunci',true);
     $date = date( 'd-m-Y H:i:s', current_time( 'timestamp', 0 ) );
     $act = isset($_GET['act']) ? $_GET['act'] : '';
+    $essay = get_post_meta($post_id,'essay',true);
 
     $infoessay = '<h5 class="card-title border-bottom pb-3 text-center fw-bold">Detail</h5>';
     $infoessay .= '<table class="table"><tbody>';
@@ -42,7 +43,7 @@
         } elseif ($sudahjawab) {
             $detailessay = $sudahjawab[0]->vq_detail;
             $detail = json_decode($detailessay);
-            $hasil_nilai = $sudahjawab[0]->nilai;        
+            $hasil_nilai = $sudahjawab[0]->nilai;
             if($hasil_nilai){
                 echo '<div class="card mx-auto w-100 mb-3" style="max-width: 500px;">';
                     echo '<div class="card-hasil-nilai card-body text-center bg-nilai">';
@@ -50,6 +51,55 @@
                         echo '<p class="card-text h1 fs-1">'.$hasil_nilai.'</p>';
                     echo '</div>';
                 echo '</div>';
+
+                if($kunci == 'Ya'){
+                    echo '<div class="text-center mb-4">';
+                        echo '<button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal-'.$post_id.'">';
+                            echo 'Detail Pengerjaan';
+                        echo '</button>';
+                    echo '</div>';
+                    echo '<div class="modal modal-lg fade" id="modal-'.$post_id.'" tabindex="-1" aria-labelledby="modal-'.$post_id.'Label" aria-hidden="true">';
+                    echo '<div class="modal-dialog">';
+                        echo '<div class="modal-content">';
+                            echo '<div class="modal-header">';
+                                echo '<h5 class="modal-title" id="modal-'.$post_id.'Label">Detail Pengerjaan</h5>';
+                                echo '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>';
+                            echo '</div>';
+                            echo '<div class="modal-body">';
+                            $i = 0;
+                            foreach ($essay['tanya'] as $data) {
+                                $urutan = $i++;
+                                $nomorsoal = $urutan + 1;
+                                echo '<div class="card-jawaban list-group-item px-0 mb-3">';
+                                    echo '<div class="card shadow-sm">';
+                                        echo '<div class="card-header">';
+                                            echo '<span> Soal no. <strong>'.$nomorsoal.'</strong> </span>';
+                                        echo '</div>';
+                                        echo '<div class="card-body">';
+                                            echo '<div class="mb-1"><b>Pertanyaan:</b></div>';
+                                            echo '<div class="card-col-soal border rounded py-2 px-3 mb-3">'.do_shortcode($data).'</div>';
+                                            echo '<div class="mb-1"><b>Jawaban:</b></div>';
+                                            echo '<div class="card-col-jawab border rounded p-3 mb-3">';
+                                                echo $detail[$urutan];
+                                            echo '</div>';                    
+                                            if($essay['pembahasan'][$urutan]){
+                                                echo '<div class="mb-1"><b>Penjelasan:</b></div>';
+                                                echo '<div class="card-col-soal border rounded border-dark p-3">'.$essay['pembahasan'][$urutan].'</div>';
+                                            }
+                                    echo '</div>';
+                                    echo '</div>';
+                                echo '</div>';
+                            }
+                            echo '</div>';
+                            echo '<div class="modal-footer">';
+                                echo '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>';
+                            echo '</div>';
+                        echo '</div>';
+                    echo '</div>';
+                    echo '</div>';
+                }
+
+
             } else {
                 echo '<div class="alert alert-info card mx-auto w-100 mb-3" style="max-width: 500px;">';
                     echo 'Hasil nilai masih menunggu pengecekan admin.';
@@ -72,11 +122,10 @@
                 </div>
                 <div class="card-body">
                     <?php
-                    $essay = get_post_meta($post_id,'essay',true);
-                    // echo '<pre>'.print_r($essay,1).'</pre>'; 
+                    //echo '<pre>'.print_r($essay,1).'</pre>'; 
                     $i = 1;
-                    $jml_essay = count($essay);
-                    foreach ($essay as $data) {
+                    $jml_essay = count($essay['tanya']);
+                    foreach ($essay['tanya'] as $data) {
                         $no = $i++;
                         $show = $no == '1'? 'show ' :'';
                         echo '<div id="coll-'.$no.'" class="'.$show.'collapse kolomsoal">';
@@ -100,7 +149,7 @@
                     } 
                     echo '<small class="fst-italic text-muted">Ket: Isikan semua jawaban sebelum submit</small>';
                     echo '<ul class="pagination mt-4 essay-pagination">';
-                    for ($x = 1; $x <= count($essay); $x++) {
+                    for ($x = 1; $x <= count($essay['tanya']); $x++) {
                         echo '<li class="page-item"><a class="page-link linksoal link'.$x.'" id="'.$x.'" href="#">'.$x.'</a></li>';
                     }
                     echo '</ul>';
