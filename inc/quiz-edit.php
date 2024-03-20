@@ -60,7 +60,7 @@ if (isset($_POST['post_title'])) {
         echo '<div class="alert alert-success">Quiz berhasil diperbarui.</div>';
         echo '<script>window.setTimeout(function(){
             window.location.href = "'.$actual_link.'";
-        }, 1000);</script>';
+        }, 1);</script>';
     } else {
         echo '<div class="alert alert-danger">Quiz gagal diperbarui.</div>';
     }
